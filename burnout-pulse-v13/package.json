@@ -1,0 +1,10 @@
+{
+  "name": "burnout-pulse",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A weekly burnout check-in, advice engine, and reflective coach for physicians.",
+  "scripts": {
+    "dev": "npx serve ."
+  },
+  "license": "UNLICENSED"
+}

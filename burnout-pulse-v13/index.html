@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="A weekly burnout check-in and reflective coach for physicians. Your data stays private." />
+<meta name="theme-color" content="#3b4332" />
+<title>Burnout Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Epilogue:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   BURNOUT PULSE: Organic anchor
+   Earth tones, Fraunces + Epilogue, rounded geometry,
+   2% grain, gentle motion, a breathing score ring.
+   ============================================================ */
+
+:root {
+  --moss-deep:#2c3327; --moss:#3b4332; --sage:#8b9d83; --sage-soft:#a9b8a1;
+  --clay:#b08b6e; --terracotta:#c66b3d; --ochre:#c08e3a;
+  --sand:#e8dcc7; --oat:#ded0b6; --paper:#efe7d6;
+  --ink:#2c3327; --ink-soft:#5a604f;
+
+  --bg:var(--sand); --panel:#f4ecdc; --panel-edge:#d8c9ac;
+  --text:var(--ink); --text-soft:var(--ink-soft);
+  --accent:var(--terracotta); --accent-deep:#a8542c;
+
+  --ease-gentle:cubic-bezier(0.33,0.7,0.3,1);
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --t-quick:180ms; --t-base:320ms; --t-slow:460ms;
+  --radius-s:12px; --radius-m:20px; --radius-l:28px;
+  --shadow-soft:0 1px 2px rgba(44,51,39,.04),0 8px 24px rgba(44,51,39,.07);
+  --shadow-lift:0 2px 6px rgba(44,51,39,.06),0 18px 42px rgba(44,51,39,.12);
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+[hidden] { display:none !important; }
+html,body { height:100%; }
+
+body {
+  font-family:'Epilogue',system-ui,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.55;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+body::after {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+h1,h2,h3,.display {
+  font-family:'Fraunces',Georgia,serif; font-weight:500;
+  letter-spacing:-.012em; line-height:1.15;
+}
+button { font-family:inherit; cursor:pointer; border:none; background:none; }
+input,select,textarea { font-family:inherit; font-size:1rem; }
+::selection { background:var(--clay); color:var(--paper); }
+:focus-visible { outline:2.5px solid var(--accent); outline-offset:3px; border-radius:4px; }
+
+.app { min-height:100%; display:flex; flex-direction:column; }
+.shell { width:100%; max-width:760px; margin:0 auto; padding:0 24px 40px; flex:1; }
+
+/* ---------- topbar ---------- */
+.topbar {
+  position:sticky; top:0; z-index:50;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  backdrop-filter:blur(14px) saturate(1.4);
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid color-mix(in srgb,var(--panel-edge) 70%,transparent);
+}
+.topbar-inner {
+  max-width:760px; margin:0 auto; padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand { display:flex; align-items:center; gap:11px; }
+.brand-mark { width:30px; height:30px; display:grid; place-items:center; }
+.brand-name { font-family:'Fraunces',serif; font-size:1.16rem; font-weight:600; letter-spacing:-.01em; }
+.brand-name em { font-style:italic; font-weight:400; color:var(--accent); }
+.topbar-actions { display:flex; align-items:center; gap:4px; }
+.icon-btn {
+  width:38px; height:38px; display:grid; place-items:center; border-radius:50%;
+  color:var(--text-soft);
+  transition:background var(--t-quick) var(--ease-out),color var(--t-quick) var(--ease-out),transform var(--t-quick) var(--ease-out);
+}
+.icon-btn:hover { background:color-mix(in srgb,var(--clay) 22%,transparent); color:var(--text); }
+.icon-btn:active { transform:scale(.92); }
+
+/* ---------- generic ---------- */
+.eyebrow { font-size:.74rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); }
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:13px 24px; border-radius:999px; font-size:.96rem; font-weight:600;
+  transition:transform var(--t-quick) var(--ease-out),background var(--t-base) var(--ease-out),box-shadow var(--t-base) var(--ease-out);
+  will-change:transform;
+}
+.btn-primary { background:var(--accent); color:var(--paper); box-shadow:0 2px 8px rgba(168,84,44,.28); }
+.btn-primary:hover { background:var(--accent-deep); box-shadow:0 6px 18px rgba(168,84,44,.34); }
+.btn-primary:active { transform:scale(.97); }
+.btn-ghost { background:transparent; color:var(--text); box-shadow:inset 0 0 0 1.5px var(--panel-edge); }
+.btn-ghost:hover { background:color-mix(in srgb,var(--clay) 14%,transparent); }
+.btn-ghost:active { transform:scale(.97); }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.btn:disabled:active { transform:none; }
+
+/* ---------- auth gate ---------- */
+.gate { min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; text-align:center; }
+.gate-mark { width:76px; height:76px; margin-bottom:28px; display:grid; place-items:center; }
+.gate h1 { font-size:clamp(2.2rem,6.4vw,3.25rem); max-width:15ch; margin-bottom:14px; text-wrap:balance; }
+.gate h1 em { font-style:italic; color:var(--accent); }
+.gate-sub { max-width:38ch; color:var(--text-soft); font-size:1.04rem; margin-bottom:36px; }
+.gate-card { width:100%; max-width:380px; background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-l); padding:30px 26px; box-shadow:var(--shadow-soft); text-align:left; }
+.field { margin-bottom:16px; }
+.field label { display:block; font-size:.82rem; font-weight:600; margin-bottom:7px; color:var(--text-soft); }
+.field input {
+  width:100%; padding:12px 14px; background:var(--bg);
+  border:1.5px solid var(--panel-edge); border-radius:var(--radius-s); color:var(--text);
+  transition:border-color var(--t-quick) var(--ease-out),box-shadow var(--t-quick) var(--ease-out);
+}
+.field input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(198,107,61,.14); }
+.field-hint { font-size:.76rem; color:var(--text-soft); margin-top:6px; }
+.gate-card .btn { width:100%; margin-top:6px; }
+.gate-switch { margin-top:18px; text-align:center; font-size:.88rem; color:var(--text-soft); }
+.gate-switch button { color:var(--accent); font-weight:600; text-decoration:underline; text-underline-offset:2px; }
+.gate-note { margin-top:26px; max-width:40ch; font-size:.8rem; color:var(--text-soft); display:flex; gap:8px; align-items:flex-start; text-align:left; }
+.gate-note svg { flex-shrink:0; margin-top:2px; }
+.form-error { background:color-mix(in srgb,var(--terracotta) 14%,transparent); color:var(--accent-deep); border-radius:var(--radius-s); padding:9px 12px; font-size:.83rem; font-weight:500; margin-bottom:14px; }
+
+/* ---------- views ---------- */
+.view { display:none; }
+.view.active { display:block; animation:rise var(--t-slow) var(--ease-out) both; }
+@keyframes rise { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+.greeting { padding:34px 0 8px; }
+.greeting .eyebrow { margin-bottom:8px; }
+.greeting h2 { font-size:clamp(1.8rem,5vw,2.5rem); }
+.greeting h2 em { font-style:italic; color:var(--accent); }
+.greeting p { color:var(--text-soft); margin-top:6px; max-width:46ch; }
+.spec-tag {
+  display:inline-block; margin:-3px 0 10px;
+  font-family:'Fraunces',serif; font-style:italic; font-size:.92rem;
+  color:var(--text-soft);
+}
+
+/* ---------- score ring ---------- */
+.pulse-card { margin-top:24px; background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-l); padding:34px 28px; box-shadow:var(--shadow-soft); display:flex; align-items:center; gap:30px; }
+.ring-wrap { position:relative; width:150px; height:150px; flex-shrink:0; }
+.ring-breathe { position:absolute; inset:0; display:grid; place-items:center; animation:breathe 11s var(--ease-gentle) infinite; }
+@keyframes breathe { 0%,100%{transform:scale(.94);} 45%,55%{transform:scale(1.04);} }
+.ring-svg { transform:rotate(-90deg); }
+.ring-track { stroke:color-mix(in srgb,var(--clay) 30%,transparent); }
+.ring-fill { stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset var(--t-slow) var(--ease-gentle),stroke var(--t-slow) var(--ease-out); }
+.ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-score { font-family:'Fraunces',serif; font-size:2.5rem; font-weight:600; line-height:1; }
+.ring-label { font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text-soft); margin-top:3px; }
+.pulse-read { flex:1; min-width:0; }
+.pulse-band { display:inline-block; font-size:.78rem; font-weight:600; padding:4px 11px; border-radius:999px; margin-bottom:9px; }
+.pulse-read h3 { font-size:1.32rem; margin-bottom:6px; }
+.pulse-read p { font-size:.92rem; color:var(--text-soft); }
+
+/* ---------- assessment ---------- */
+.section-head { margin:40px 0 4px; display:flex; align-items:baseline; justify-content:space-between; }
+.section-head h3 { font-size:1.42rem; }
+.section-head .count { font-size:.84rem; color:var(--text-soft); }
+.dims { margin-top:18px; display:flex; flex-direction:column; gap:14px; }
+.dim { background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); padding:20px 22px; transition:border-color var(--t-base) var(--ease-out),box-shadow var(--t-base) var(--ease-out); }
+.dim:hover { box-shadow:var(--shadow-soft); }
+.dim.answered { border-color:color-mix(in srgb,var(--sage) 70%,var(--panel-edge)); }
+.dim-top { display:flex; align-items:flex-start; gap:13px; margin-bottom:16px; }
+.dim-icon { width:38px; height:38px; flex-shrink:0; border-radius:11px; display:grid; place-items:center; background:color-mix(in srgb,var(--clay) 22%,transparent); color:var(--moss); }
+.dim-text h4 { font-family:'Fraunces',serif; font-size:1.06rem; font-weight:600; }
+.dim-text p { font-size:.86rem; color:var(--text-soft); margin-top:1px; }
+.scale { display:flex; gap:8px; }
+.scale-opt { flex:1; position:relative; padding:11px 4px 9px; border-radius:var(--radius-s); background:var(--bg); border:1.5px solid var(--panel-edge); display:flex; flex-direction:column; align-items:center; gap:7px; transition:transform var(--t-quick) var(--ease-out),border-color var(--t-quick) var(--ease-out),background var(--t-quick) var(--ease-out); }
+.scale-opt:hover { transform:translateY(-2px); border-color:var(--clay); }
+.scale-opt:active { transform:translateY(0) scale(.97); }
+.scale-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--sage); transition:background var(--t-quick) var(--ease-out),border-color var(--t-quick) var(--ease-out),transform var(--t-quick) var(--ease-out); }
+.scale-cap { font-size:.66rem; font-weight:600; color:var(--text-soft); text-align:center; line-height:1.25; }
+.scale-opt.picked { border-color:var(--accent); background:color-mix(in srgb,var(--terracotta) 12%,var(--bg)); }
+.scale-opt.picked .scale-dot { background:var(--accent); border-color:var(--accent); transform:scale(1.15); }
+.scale-opt.picked .scale-cap { color:var(--accent-deep); }
+
+/* ---------- save bar ---------- */
+.savebar { position:sticky; bottom:0; z-index:40; margin-top:28px; padding:14px 0 18px; background:linear-gradient(to top,var(--bg) 72%,transparent); }
+.savebar-inner { display:flex; align-items:center; gap:14px; background:var(--moss); color:var(--paper); border-radius:var(--radius-m); padding:14px 18px; box-shadow:var(--shadow-lift); }
+.savebar-text { flex:1; min-width:0; }
+.savebar-text strong { font-family:'Fraunces',serif; font-weight:600; font-size:1rem; }
+.savebar-text span { display:block; font-size:.81rem; opacity:.78; }
+.savebar .btn-primary { background:var(--accent); flex-shrink:0; }
+.savebar .btn-primary:hover { background:var(--accent-deep); }
+
+/* ---------- history ---------- */
+.history-list { margin-top:18px; display:flex; flex-direction:column; gap:10px; }
+.history-empty { background:var(--panel); border:1px dashed var(--panel-edge); border-radius:var(--radius-m); padding:34px 24px; text-align:center; color:var(--text-soft); }
+.history-empty svg { margin-bottom:12px; }
+.hrow { background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); padding:15px 18px; display:flex; align-items:center; gap:16px; transition:box-shadow var(--t-base) var(--ease-out); }
+.hrow:hover { box-shadow:var(--shadow-soft); }
+.hrow-score { width:46px; height:46px; flex-shrink:0; border-radius:13px; display:grid; place-items:center; font-family:'Fraunces',serif; font-weight:600; font-size:1.18rem; color:var(--paper); }
+.hrow-meta { flex:1; min-width:0; }
+.hrow-date { font-weight:600; font-size:.93rem; }
+.hrow-band { font-size:.81rem; color:var(--text-soft); }
+.hrow-trend { font-size:.8rem; font-weight:600; display:flex; align-items:center; gap:4px; }
+.trend-up { color:var(--terracotta); }
+.trend-down { color:var(--moss); }
+.trend-flat { color:var(--text-soft); }
+
+/* ---------- advice ---------- */
+.advice-wrap { margin-top:16px; display:flex; flex-direction:column; gap:12px; }
+.advice-card { background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); padding:18px 20px; }
+.advice-head { display:flex; align-items:center; gap:11px; margin-bottom:9px; }
+.advice-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.advice-head h4 { font-family:'Fraunces',serif; font-size:1.04rem; font-weight:600; flex:1; }
+.advice-tag { font-size:.72rem; font-weight:600; padding:3px 9px; border-radius:999px; }
+.advice-card p { font-size:.89rem; color:var(--text-soft); }
+
+/* ---------- coach ---------- */
+.coach-view { display:none; flex-direction:column; }
+.coach-view.active { display:flex; animation:rise var(--t-slow) var(--ease-out) both; }
+.coach-head { padding:30px 0 14px; }
+.coach-head h2 { font-size:clamp(1.7rem,4.6vw,2.3rem); }
+.coach-head h2 em { font-style:italic; color:var(--accent); }
+.coach-head p { color:var(--text-soft); margin-top:5px; font-size:.94rem; max-width:48ch; }
+
+.coach-thread { display:flex; flex-direction:column; gap:14px; padding:8px 0 16px; min-height:180px; }
+.bubble { max-width:84%; padding:13px 16px; border-radius:var(--radius-m); font-size:.94rem; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; animation:bubbleIn var(--t-base) var(--ease-out) both; }
+@keyframes bubbleIn { from{opacity:0;transform:translateY(8px) scale(.98);} to{opacity:1;transform:translateY(0) scale(1);} }
+.bubble-coach { align-self:flex-start; background:var(--panel); border:1px solid var(--panel-edge); border-bottom-left-radius:6px; color:var(--text); }
+.bubble-user { align-self:flex-end; background:var(--moss); color:var(--paper); border-bottom-right-radius:6px; }
+.bubble-care {
+  align-self:flex-start; max-width:92%;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--ochre) 22%,var(--panel)),var(--panel));
+  border:1px solid var(--ochre); border-bottom-left-radius:6px;
+}
+.bubble-care strong { font-family:'Fraunces',serif; font-weight:600; }
+.bubble-care a { color:var(--accent-deep); font-weight:600; }
+.coach-greeting { align-self:center; text-align:center; color:var(--text-soft); font-size:.9rem; max-width:40ch; padding:20px 0; }
+.coach-greeting .coach-mark { margin-bottom:12px; }
+
+.typing { align-self:flex-start; background:var(--panel); border:1px solid var(--panel-edge); border-bottom-left-radius:6px; padding:14px 17px; border-radius:var(--radius-m); display:flex; gap:5px; }
+.typing span { width:7px; height:7px; border-radius:50%; background:var(--clay); animation:blink 1.3s var(--ease-gentle) infinite; }
+.typing span:nth-child(2){animation-delay:.18s;} .typing span:nth-child(3){animation-delay:.36s;}
+@keyframes blink { 0%,60%,100%{opacity:.3;transform:translateY(0);} 30%{opacity:1;transform:translateY(-3px);} }
+
+.coach-compose {
+  position:sticky; bottom:0; z-index:40;
+  padding:12px 0 16px;
+  background:linear-gradient(to top,var(--bg) 76%,transparent);
+}
+.compose-inner { display:flex; gap:9px; align-items:flex-end; background:var(--panel); border:1.5px solid var(--panel-edge); border-radius:var(--radius-m); padding:8px 8px 8px 14px; transition:border-color var(--t-quick) var(--ease-out); }
+.compose-inner:focus-within { border-color:var(--clay); }
+.compose-inner textarea { flex:1; border:none; background:none; resize:none; padding:7px 0; max-height:120px; color:var(--text); line-height:1.45; }
+.compose-inner textarea:focus { outline:none; }
+.compose-send { width:40px; height:40px; flex-shrink:0; border-radius:50%; background:var(--accent); color:var(--paper); display:grid; place-items:center; transition:transform var(--t-quick) var(--ease-out),background var(--t-base) var(--ease-out); }
+.compose-send:hover { background:var(--accent-deep); }
+.compose-send:active { transform:scale(.9); }
+.compose-send:disabled { opacity:.4; cursor:not-allowed; }
+.compose-note { font-size:.74rem; color:var(--text-soft); text-align:center; margin-top:7px; }
+.compose-note strong { color:var(--clay); font-weight:600; }
+
+/* ---------- support card ---------- */
+.support { margin-top:16px; background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); padding:20px 22px; }
+.support h4 { font-family:'Fraunces',serif; font-size:1.04rem; margin-bottom:5px; }
+.support p { font-size:.87rem; color:var(--text-soft); }
+.support a { color:var(--accent-deep); font-weight:600; }
+
+/* ---------- people (leaderboard + friends) ---------- */
+.subtabs { display:flex; gap:4px; margin-top:18px; background:color-mix(in srgb,var(--clay) 16%,transparent); padding:4px; border-radius:999px; }
+.subtab { flex:1; padding:8px 12px; border-radius:999px; font-size:.85rem; font-weight:600; color:var(--text-soft); transition:color var(--t-quick) var(--ease-out),background var(--t-base) var(--ease-out); }
+.subtab.active { background:var(--panel); color:var(--text); box-shadow:var(--shadow-soft); }
+.subpanel { display:none; }
+.subpanel.active { display:block; animation:rise var(--t-base) var(--ease-out) both; }
+
+.optin-card { margin-top:16px; background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); padding:20px 22px; }
+.optin-row { display:flex; align-items:center; gap:14px; }
+.optin-row .optin-text { flex:1; }
+.optin-text strong { font-family:'Fraunces',serif; font-weight:600; font-size:1rem; display:block; }
+.optin-text span { font-size:.84rem; color:var(--text-soft); }
+.toggle { width:48px; height:28px; border-radius:999px; background:var(--panel-edge); position:relative; flex-shrink:0; transition:background var(--t-base) var(--ease-out); }
+.toggle::after { content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:var(--paper); transition:transform var(--t-base) var(--ease-gentle); box-shadow:0 1px 3px rgba(0,0,0,.2); }
+.toggle.on { background:var(--sage); }
+.toggle.on::after { transform:translateX(20px); }
+
+.lb-list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+.lb-row { display:flex; align-items:center; gap:14px; padding:12px 16px; background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); }
+.lb-row.is-me { border-color:var(--clay); background:color-mix(in srgb,var(--clay) 12%,var(--panel)); }
+.lb-rank { font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; color:var(--text-soft); width:26px; }
+.lb-name { flex:1; font-weight:600; font-size:.93rem; }
+.lb-name .me-tag { font-size:.72rem; color:var(--clay); font-weight:600; margin-left:6px; }
+.lb-score { font-family:'Fraunces',serif; font-weight:600; font-size:1.1rem; }
+
+.friend-add { display:flex; gap:9px; margin-top:14px; }
+.friend-add input { flex:1; padding:11px 14px; background:var(--panel); border:1.5px solid var(--panel-edge); border-radius:var(--radius-s); }
+.friend-add input:focus { outline:none; border-color:var(--clay); }
+.friend-list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+.friend-row { display:flex; align-items:center; gap:13px; padding:12px 16px; background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m); transition:box-shadow var(--t-base) var(--ease-out); }
+.friend-row:hover { box-shadow:var(--shadow-soft); }
+.friend-avatar { width:38px; height:38px; border-radius:50%; flex-shrink:0; display:grid; place-items:center; font-family:'Fraunces',serif; font-weight:600; color:var(--paper); background:var(--sage); }
+.friend-meta { flex:1; min-width:0; }
+.friend-meta strong { font-size:.92rem; font-weight:600; }
+.friend-meta span { display:block; font-size:.8rem; color:var(--text-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.friend-open { font-size:.82rem; font-weight:600; color:var(--accent-deep); }
+
+.empty-soft { background:var(--panel); border:1px dashed var(--panel-edge); border-radius:var(--radius-m); padding:30px 24px; text-align:center; color:var(--text-soft); font-size:.9rem; }
+.empty-soft svg { margin-bottom:10px; }
+
+/* chat drawer */
+.drawer-scrim { position:fixed; inset:0; z-index:90; background:rgba(44,51,39,.42); opacity:0; pointer-events:none; transition:opacity var(--t-base) var(--ease-out); }
+.drawer-scrim.open { opacity:1; pointer-events:auto; }
+.drawer {
+  position:fixed; right:0; top:0; bottom:0; z-index:100;
+  width:min(420px,100vw); background:var(--bg);
+  display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform var(--t-slow) var(--ease-gentle);
+  box-shadow:-20px 0 50px rgba(44,51,39,.18);
+}
+.drawer.open { transform:translateX(0); }
+.drawer-head { display:flex; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid var(--panel-edge); }
+.drawer-head .friend-avatar { width:34px; height:34px; }
+.drawer-head .dh-name { flex:1; font-family:'Fraunces',serif; font-weight:600; }
+.drawer-thread { flex:1; overflow-y:auto; padding:18px 20px; display:flex; flex-direction:column; gap:11px; }
+.drawer-compose { padding:12px 16px; border-top:1px solid var(--panel-edge); }
+
+/* ---------- tabs ---------- */
+.tabs { display:flex; gap:4px; margin-top:8px; background:color-mix(in srgb,var(--clay) 16%,transparent); padding:4px; border-radius:999px; }
+.tab { flex:1; padding:9px 12px; border-radius:999px; font-size:.86rem; font-weight:600; color:var(--text-soft); transition:color var(--t-quick) var(--ease-out),background var(--t-base) var(--ease-out); }
+.tab.active { background:var(--panel); color:var(--text); box-shadow:var(--shadow-soft); }
+.tab:not(.active):hover { color:var(--text); }
+
+/* ---------- toast ---------- */
+.toast { position:fixed; left:50%; bottom:26px; transform:translate(-50%,140%); background:var(--moss-deep); color:var(--paper); padding:13px 22px; border-radius:999px; font-size:.9rem; font-weight:500; box-shadow:var(--shadow-lift); z-index:200; display:flex; align-items:center; gap:9px; transition:transform var(--t-base) var(--ease-out); }
+.toast.show { transform:translate(-50%,0); }
+
+/* ---------- footer ---------- */
+.foot { text-align:center; padding:30px 24px; color:var(--text-soft); font-size:.8rem; }
+.foot em { font-style:italic; }
+
+/* ---------- splash (loading + pull-up) ---------- */
+.splash { position:fixed; inset:0; z-index:500; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; transition:opacity var(--t-slow) var(--ease-out); overflow:hidden; }
+.splash.gone { opacity:0; pointer-events:none; }
+.splash-stack { display:flex; flex-direction:column; align-items:center; gap:22px; transition:opacity var(--t-base) var(--ease-out), transform var(--t-slow) var(--ease-gentle); }
+.splash.lifting .splash-stack { opacity:.55; transform:translateY(-26px); }
+.splash-mark { animation:breathe 4s var(--ease-gentle) infinite; }
+.splash-word { font-family:'Fraunces',serif; font-size:1.1rem; font-style:italic; color:var(--text-soft); }
+
+/* loading dots that draw the brand wave under the mark */
+.splash-loadline { width:148px; height:2px; background:color-mix(in srgb,var(--clay) 22%,transparent); border-radius:2px; overflow:hidden; opacity:0; transition:opacity var(--t-base) var(--ease-out); }
+.splash.loading .splash-loadline { opacity:1; }
+.splash-loadline::after { content:""; display:block; width:40%; height:100%; background:var(--accent); border-radius:2px; animation:loadSweep 1.3s var(--ease-gentle) infinite; }
+@keyframes loadSweep { 0%{transform:translateX(-100%);} 100%{transform:translateX(360%);} }
+
+/* pull-up handle: appears once loading completes, only on auth-gate path */
+.pullup {
+  position:absolute; left:0; right:0; bottom:0;
+  display:none; flex-direction:column; align-items:center; gap:12px;
+  padding:28px 24px 38px;
+  background:linear-gradient(to top, color-mix(in srgb,var(--moss) 18%,var(--bg)) 0%, transparent 100%);
+  transform:translateY(100%);
+  transition:transform var(--t-slow) var(--ease-gentle);
+  touch-action:none;
+}
+.splash.pullup-ready .pullup { display:flex; transform:translateY(0); }
+.pullup-grip {
+  width:46px; height:5px; border-radius:3px; background:var(--clay);
+  opacity:.55; transition:opacity var(--t-quick) var(--ease-out), transform var(--t-base) var(--ease-out);
+  animation:gripHint 2.4s var(--ease-gentle) infinite;
+}
+@keyframes gripHint {
+  0%,100% { transform:translateY(0); opacity:.55; }
+  50%     { transform:translateY(-6px); opacity:.95; }
+}
+.pullup-label { font-size:.86rem; color:var(--text-soft); font-weight:500; letter-spacing:.01em; }
+.pullup-arrow { color:var(--clay); animation:arrowHint 2.4s var(--ease-gentle) infinite; }
+@keyframes arrowHint {
+  0%,100% { transform:translateY(0); opacity:.5; }
+  50%     { transform:translateY(-4px); opacity:1; }
+}
+.pullup.dragging { transition:none; }
+.pullup.dragging .pullup-grip { animation:none; opacity:1; }
+.pullup.dragging .pullup-arrow { animation:none; opacity:1; }
+
+/* ---------- box-open animation into the app ---------- */
+@keyframes boxLidLift {
+  0%   { transform:translateY(0) rotateX(0deg); opacity:1; }
+  35%  { transform:translateY(-6px) rotateX(0deg); opacity:1; }
+  100% { transform:translateY(-58px) rotateX(-105deg); opacity:0; }
+}
+@keyframes boxBaseOpen {
+  0%   { transform:scale(1); opacity:1; }
+  60%  { transform:scale(1.06); opacity:.85; }
+  100% { transform:scale(1.35); opacity:0; }
+}
+@keyframes boxGlow {
+  0%   { opacity:0; transform:scale(.6); }
+  35%  { opacity:.85; transform:scale(1); }
+  100% { opacity:0; transform:scale(1.6); }
+}
+@keyframes boxRise {
+  0%   { transform:scale(.94) translateY(18px); opacity:0; filter:blur(6px); }
+  100% { transform:scale(1) translateY(0); opacity:1; filter:blur(0); }
+}
+.box-stage {
+  position:fixed; inset:0; z-index:480; pointer-events:none;
+  display:none; align-items:center; justify-content:center;
+  background:var(--bg);
+}
+.box-stage.active { display:flex; }
+.box-wrap {
+  position:relative;
+  width:min(320px,78vw); height:200px;
+}
+.box-base {
+  position:absolute; left:0; right:0; bottom:0; height:160px;
+  background:var(--panel); border:1px solid var(--panel-edge);
+  border-radius:var(--radius-l);
+  box-shadow:var(--shadow-lift);
+  transform-origin:center center;
+  overflow:hidden;
+}
+.box-base::after {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at center top, color-mix(in srgb,var(--terracotta) 22%,transparent) 0%, transparent 65%);
+}
+.box-lid {
+  position:absolute; left:0; right:0; top:26px; height:36px;
+  background:var(--panel); border:1px solid var(--panel-edge); border-bottom:none;
+  border-radius:var(--radius-l) var(--radius-l) 4px 4px;
+  box-shadow:var(--shadow-soft);
+  transform-origin:top center;
+}
+.box-glow {
+  position:absolute; left:50%; top:60%; width:200px; height:200px;
+  margin-left:-100px; margin-top:-100px;
+  background:radial-gradient(circle, color-mix(in srgb,var(--terracotta) 50%,transparent) 0%, transparent 55%);
+  border-radius:50%;
+  opacity:0;
+  pointer-events:none;
+}
+.box-stage.opening .box-lid  { animation:boxLidLift 760ms var(--ease-gentle) forwards; }
+.box-stage.opening .box-glow { animation:boxGlow 900ms var(--ease-out) 120ms forwards; }
+.box-stage.opening .box-base { animation:boxBaseOpen 700ms var(--ease-gentle) 260ms forwards; }
+.app.boxing-in { animation:boxRise 620ms var(--ease-gentle) 360ms backwards; }
+
+/* ---------- onboarding (specialty pick) ---------- */
+.onboard {
+  min-height:100dvh; display:flex; flex-direction:column; align-items:center;
+  padding:40px 24px 80px; text-align:center;
+}
+.onboard h1 { font-size:clamp(2rem,5.6vw,2.8rem); max-width:18ch; margin:18px 0 12px; text-wrap:balance; }
+.onboard h1 em { font-style:italic; color:var(--accent); }
+.onboard-sub { max-width:42ch; color:var(--text-soft); font-size:1rem; margin-bottom:30px; }
+.onboard-grid {
+  width:100%; max-width:560px;
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.spec-card {
+  background:var(--panel); border:1.5px solid var(--panel-edge);
+  border-radius:var(--radius-m); padding:18px 16px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
+  text-align:left; cursor:pointer;
+  transition:transform var(--t-quick) var(--ease-out), border-color var(--t-quick) var(--ease-out), background var(--t-quick) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+}
+.spec-card:hover { transform:translateY(-2px); border-color:var(--clay); box-shadow:var(--shadow-soft); }
+.spec-card.picked {
+  border-color:var(--accent);
+  background:color-mix(in srgb,var(--terracotta) 10%,var(--panel));
+  box-shadow:var(--shadow-soft);
+}
+.spec-icon {
+  width:36px; height:36px; border-radius:11px;
+  background:color-mix(in srgb,var(--clay) 22%,transparent);
+  color:var(--moss); display:grid; place-items:center;
+}
+.spec-card.picked .spec-icon {
+  background:color-mix(in srgb,var(--terracotta) 26%,transparent);
+  color:var(--accent-deep);
+}
+.spec-name { font-family:'Fraunces',serif; font-weight:600; font-size:1.04rem; }
+.spec-blurb { font-size:.78rem; color:var(--text-soft); line-height:1.4; }
+.onboard-actions { margin-top:28px; display:flex; gap:10px; width:100%; max-width:380px; }
+.onboard-actions .btn-primary { flex:1; }
+.onboard-skip { font-size:.84rem; color:var(--text-soft); text-decoration:underline; text-underline-offset:2px; padding:8px 14px; }
+@media (max-width:420px) {
+  .onboard-grid { grid-template-columns:1fr; }
+}
+
+/* ---------- journal ---------- */
+.journal-head { padding:30px 0 14px; }
+.journal-head h2 { font-size:clamp(1.7rem,4.6vw,2.3rem); }
+.journal-head h2 em { font-style:italic; color:var(--accent); }
+.journal-head p { color:var(--text-soft); margin-top:5px; font-size:.94rem; max-width:48ch; }
+.journal-compose {
+  background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-l);
+  padding:18px; margin-top:18px; box-shadow:var(--shadow-soft);
+}
+.journal-compose textarea {
+  width:100%; min-height:96px; max-height:280px;
+  border:none; background:transparent; resize:vertical;
+  color:var(--text); line-height:1.5; font-size:.98rem;
+}
+.journal-compose textarea:focus { outline:none; }
+.journal-thumbs { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.journal-thumb {
+  position:relative; width:74px; height:74px; border-radius:12px; overflow:hidden;
+  background:var(--bg); border:1px solid var(--panel-edge);
+}
+.journal-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.journal-thumb button {
+  position:absolute; top:3px; right:3px; width:22px; height:22px; border-radius:50%;
+  background:rgba(44,51,39,.7); color:var(--paper); display:grid; place-items:center;
+  font-size:.74rem;
+}
+.journal-bar {
+  display:flex; align-items:center; gap:10px; margin-top:14px;
+  padding-top:14px; border-top:1px solid var(--panel-edge);
+}
+.journal-photo-btn {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:8px 13px; border-radius:var(--radius-s);
+  background:var(--bg); border:1.5px solid var(--panel-edge);
+  font-size:.84rem; font-weight:500; color:var(--text-soft);
+  transition:border-color var(--t-quick) var(--ease-out), color var(--t-quick) var(--ease-out);
+}
+.journal-photo-btn:hover { border-color:var(--clay); color:var(--text); }
+.journal-bar .btn-primary { margin-left:auto; }
+.journal-bar input[type=file] { display:none; }
+.journal-privacy {
+  margin-top:10px; padding:11px 14px;
+  background:color-mix(in srgb,var(--sage) 12%,transparent);
+  border-radius:var(--radius-s);
+  font-size:.78rem; color:var(--text-soft);
+  display:flex; gap:8px; align-items:flex-start;
+}
+.journal-privacy svg { flex-shrink:0; margin-top:1px; color:var(--moss); }
+.journal-list { margin-top:24px; display:flex; flex-direction:column; gap:14px; }
+.journal-entry {
+  background:var(--panel); border:1px solid var(--panel-edge); border-radius:var(--radius-m);
+  padding:18px 20px;
+  transition:box-shadow var(--t-base) var(--ease-out);
+}
+.journal-entry:hover { box-shadow:var(--shadow-soft); }
+.journal-entry-head {
+  display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;
+}
+.journal-entry-date { font-family:'Fraunces',serif; font-weight:600; font-size:.98rem; }
+.journal-entry-time { font-size:.78rem; color:var(--text-soft); }
+.journal-entry-delete { font-size:.74rem; color:var(--text-soft); padding:4px 8px; border-radius:6px; }
+.journal-entry-delete:hover { color:var(--accent-deep); background:color-mix(in srgb,var(--terracotta) 10%,transparent); }
+.journal-entry-body { font-size:.94rem; line-height:1.55; white-space:pre-wrap; word-wrap:break-word; color:var(--text); }
+.journal-entry-photos {
+  margin-top:12px; display:grid; gap:8px;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+}
+.journal-entry-photos img {
+  width:100%; aspect-ratio:1/1; object-fit:cover;
+  border-radius:12px; cursor:zoom-in;
+  border:1px solid var(--panel-edge);
+}
+
+/* full-size photo viewer */
+.photo-viewer {
+  position:fixed; inset:0; z-index:300;
+  background:rgba(44,51,39,.88);
+  display:none; align-items:center; justify-content:center;
+  padding:30px;
+  opacity:0; transition:opacity var(--t-base) var(--ease-out);
+}
+.photo-viewer.open { display:flex; opacity:1; }
+.photo-viewer img { max-width:100%; max-height:90vh; border-radius:12px; box-shadow:var(--shadow-lift); }
+.photo-viewer-close {
+  position:absolute; top:18px; right:18px; width:38px; height:38px; border-radius:50%;
+  background:rgba(255,255,255,.12); color:var(--paper); display:grid; place-items:center;
+}
+
+/* ---------- about ---------- */
+.about-head { padding:30px 0 14px; }
+.about-head h2 { font-size:clamp(1.7rem,4.6vw,2.3rem); }
+.about-head h2 em { font-style:italic; color:var(--accent); }
+.about-head p { color:var(--text-soft); margin-top:5px; font-size:.94rem; max-width:48ch; }
+.about-section {
+  margin-top:20px; background:var(--panel); border:1px solid var(--panel-edge);
+  border-radius:var(--radius-m); padding:22px 24px;
+}
+.about-section h3 { font-family:'Fraunces',serif; font-weight:600; font-size:1.18rem; margin-bottom:10px; }
+.about-section p { font-size:.92rem; line-height:1.6; color:var(--text); }
+.about-section p + p { margin-top:10px; }
+.about-dim-list { margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+.about-dim-row { display:flex; gap:12px; align-items:flex-start; }
+.about-dim-row .dim-icon { width:30px; height:30px; border-radius:9px; margin-top:1px; }
+.about-dim-row .dim-icon svg { width:16px; height:16px; }
+.about-dim-row strong { font-family:'Fraunces',serif; font-weight:600; font-size:.96rem; display:block; margin-bottom:2px; }
+.about-dim-row p { font-size:.84rem; color:var(--text-soft); line-height:1.5; }
+.about-foot { margin-top:24px; text-align:center; font-size:.8rem; color:var(--text-soft); }
+.about-foot em { font-style:italic; }
+
+/* ---------- tab bar at six tabs ---------- */
+.tabs.six .tab { font-size:.8rem; padding:8px 6px; white-space:nowrap; }
+@media (max-width:540px) {
+  .tabs.six .tab { font-size:.74rem; padding:7px 4px; letter-spacing:-.01em; }
+}
+@media (max-width:380px) {
+  .tabs.six { gap:2px; padding:3px; }
+  .tabs.six .tab { font-size:.7rem; padding:7px 3px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  .ring-breathe,.splash-mark { animation:none !important; }
+}
+@media (max-width:540px) {
+  .pulse-card { flex-direction:column; text-align:center; gap:20px; }
+  .pulse-read { text-align:center; }
+  .scale-cap { font-size:.6rem; }
+  .savebar-inner { flex-direction:column; align-items:stretch; gap:10px; }
+  .savebar .btn-primary { width:100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="splash loading" id="splash">
+  <div class="splash-stack">
+    <div class="splash-mark" id="splashMark"></div>
+    <div class="splash-word">one quiet minute for yourself</div>
+    <div class="splash-loadline"></div>
+  </div>
+  <div class="pullup" id="pullup">
+    <div class="pullup-grip"></div>
+    <div class="pullup-label">Pull up to begin</div>
+    <div class="pullup-arrow">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- box-open animation stage -->
+<div class="box-stage" id="boxStage">
+  <div class="box-wrap">
+    <div class="box-glow"></div>
+    <div class="box-base"></div>
+    <div class="box-lid"></div>
+  </div>
+</div>
+
+<!-- photo viewer (for journal images) -->
+<div class="photo-viewer" id="photoViewer">
+  <button class="photo-viewer-close" id="photoViewerClose" aria-label="Close">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <img id="photoViewerImg" alt="" />
+</div>
+
+<!-- onboarding (doctor type) -->
+<section class="onboard" id="onboard" hidden>
+  <div id="onboardMark"></div>
+  <h1>What kind of doctor <em>are you</em>?</h1>
+  <p class="onboard-sub">Pick the one that fits closest. It changes a few of the check-in questions so they fit your actual day, not a generic one.</p>
+  <div class="onboard-grid" id="onboardGrid"></div>
+  <div class="onboard-actions">
+    <button class="btn btn-primary" id="onboardContinue" disabled>Continue</button>
+  </div>
+  <button class="onboard-skip" id="onboardSkip">Skip for now</button>
+</section>
+
+<div class="app" id="app" hidden>
+
+  <!-- ===== AUTH GATE ===== -->
+  <section class="gate" id="gate" hidden>
+    <div class="gate-mark" id="gateMark"></div>
+    <h1>A weekly check-in,<br />before the week <em>checks in on you</em>.</h1>
+    <p class="gate-sub">Burnout Pulse tracks how you're holding up, gives you advice that fits your scores, and a coach to talk it through.</p>
+    <div class="gate-card">
+      <div id="formError" class="form-error" hidden></div>
+      <div class="field">
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" autocomplete="email" placeholder="you@hospital.org" />
+      </div>
+      <div class="field" id="nameField" hidden>
+        <label for="nameInput">First name</label>
+        <input type="text" id="nameInput" autocomplete="given-name" placeholder="What should we call you?" />
+      </div>
+      <div class="field">
+        <label for="passInput">Passphrase</label>
+        <input type="password" id="passInput" autocomplete="current-password" placeholder="At least 10 characters" />
+        <div class="field-hint" id="passHint" hidden>Use 10 or more characters. Stored only on this device.</div>
+      </div>
+      <button class="btn btn-primary" id="authBtn">Sign in</button>
+      <div class="gate-switch">
+        <span id="switchPrompt">New to Burnout Pulse?</span>
+        <button id="switchBtn">Create an account</button>
+      </div>
+    </div>
+    <div class="gate-note">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Everything stays in this browser. Nothing is sent to a server in this build. Clearing your browser data erases your history.</span>
+    </div>
+  </section>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar" id="topbar" hidden>
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" id="brandMark"></div>
+        <div class="brand-name">Burnout <em>Pulse</em></div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="soundBtn" title="Ambient sound" aria-label="Toggle ambient sound">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+        </button>
+        <button class="icon-btn" id="signOutBtn" title="Sign out" aria-label="Sign out">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="shell" hidden>
+
+    <!-- ===== TAB BAR ===== -->
+    <nav class="tabs six" id="tabBar" style="margin-top:14px;">
+      <button class="tab active" id="tabCheckin">Check&#8209;in</button>
+      <button class="tab" id="tabTrend">Trend</button>
+      <button class="tab" id="tabCoach">Coach</button>
+      <button class="tab" id="tabJournal">Journal</button>
+      <button class="tab" id="tabPeople">People</button>
+      <button class="tab" id="tabAbout">About</button>
+    </nav>
+
+    <!-- ===== CHECK-IN ===== -->
+    <section class="view active" id="viewCheckin">
+      <div class="greeting">
+        <div class="eyebrow" id="weekTag">This week</div>
+        <div class="spec-tag" id="specTag" hidden></div>
+        <h2 id="greetLine">How are you, <em>really</em>?</h2>
+        <p>Answer honestly. There's no good or bad score here, only an accurate one.</p>
+      </div>
+      <div class="pulse-card">
+        <div class="ring-wrap">
+          <div class="ring-breathe">
+            <svg class="ring-svg" width="150" height="150" viewBox="0 0 150 150">
+              <circle class="ring-track" cx="75" cy="75" r="64" fill="none" stroke-width="13" />
+              <circle class="ring-fill" id="ringFill" cx="75" cy="75" r="64" fill="none" stroke-width="13" stroke-dasharray="402" stroke-dashoffset="402" />
+            </svg>
+          </div>
+          <div class="ring-center">
+            <div class="ring-score" id="ringScore">&mdash;</div>
+            <div class="ring-label">of 100</div>
+          </div>
+        </div>
+        <div class="pulse-read">
+          <span class="pulse-band" id="pulseBand">Not scored yet</span>
+          <h3 id="pulseTitle">Your pulse, once you finish</h3>
+          <p id="pulseDesc">Move through the six prompts below. The ring fills as you go.</p>
+        </div>
+      </div>
+      <div class="section-head">
+        <h3>The six dimensions</h3>
+        <span class="count" id="dimCount">0 of 6</span>
+      </div>
+      <div class="dims" id="dims"></div>
+      <div class="savebar">
+        <div class="savebar-inner">
+          <div class="savebar-text">
+            <strong id="saveTitle">Answer all six to save</strong>
+            <span id="saveSub">Your check-in is logged on this device only.</span>
+          </div>
+          <button class="btn btn-primary" id="saveBtn" disabled>Save check-in</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TREND ===== -->
+    <section class="view" id="viewTrend">
+      <div class="greeting">
+        <div class="eyebrow">Looking back</div>
+        <h2>Your <em>trend</em></h2>
+        <p>Each check-in is one data point. The shape they make over weeks is what matters.</p>
+      </div>
+      <div id="historyBody"></div>
+      <div id="adviceBlock" hidden>
+        <div class="section-head"><h3>What might help</h3></div>
+        <p style="font-size:.88rem;color:var(--text-soft);margin-top:4px;">Based on your most recent check-in. These are starting points, not prescriptions.</p>
+        <div class="advice-wrap" id="adviceWrap"></div>
+      </div>
+      <div class="support">
+        <h4>If a week feels heavier than usual</h4>
+        <p>A high score is a signal to talk to someone, not a verdict. Your hospital's clinician wellbeing office or employee assistance program is a place to start. In the US, the Physician Support Line is reachable at <a href="tel:18884090141">1-888-409-0141</a>, staffed by psychiatrists, free and confidential. If you're in crisis, call or text 988.</p>
+      </div>
+    </section>
+
+    <!-- ===== COACH ===== -->
+    <section class="coach-view" id="viewCoach">
+      <div class="coach-head">
+        <div class="eyebrow">Your coach</div>
+        <h2>Talk it <em>through</em></h2>
+        <p>A space to think out loud. The coach knows your check-in scores and remembers your past conversations.</p>
+      </div>
+      <div class="coach-thread" id="coachThread"></div>
+      <div class="coach-compose">
+        <div class="compose-inner">
+          <textarea id="coachInput" rows="1" placeholder="Tell me about your day."></textarea>
+          <button class="compose-send" id="coachSend" aria-label="Send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+        <div class="compose-note" id="coachNote">Your conversation is saved on this device.</div>
+      </div>
+    </section>
+
+    <!-- ===== PEOPLE ===== -->
+    <section class="view" id="viewPeople">
+      <div class="greeting">
+        <div class="eyebrow">Not alone in it</div>
+        <h2>Your <em>people</em></h2>
+        <p>Optional, and private by default. Nothing here is shared unless you switch it on.</p>
+      </div>
+      <div class="subtabs">
+        <button class="subtab active" id="subLeaderboard">Leaderboard</button>
+        <button class="subtab" id="subFriends">Friends</button>
+      </div>
+
+      <div class="subpanel active" id="panelLeaderboard">
+        <div class="optin-card">
+          <div class="optin-row">
+            <div class="optin-text">
+              <strong>Share my score</strong>
+              <span>Adds an anonymous handle and your latest score to the board.</span>
+            </div>
+            <button class="toggle" id="lbToggle" role="switch" aria-checked="false" aria-label="Share my score"></button>
+          </div>
+        </div>
+        <div id="lbBody"></div>
+      </div>
+
+      <div class="subpanel" id="panelFriends">
+        <div class="friend-add">
+          <input type="email" id="friendEmail" placeholder="Friend's email" autocomplete="off" />
+          <button class="btn btn-primary" id="friendAddBtn">Add</button>
+        </div>
+        <div id="friendBody"></div>
+      </div>
+    </section>
+
+    <!-- ===== JOURNAL ===== -->
+    <section class="view" id="viewJournal">
+      <div class="journal-head">
+        <div class="eyebrow">For your eyes only</div>
+        <h2>Your <em>journal</em></h2>
+        <p>A private place to write about your day. Add a photo if it helps. No one else sees this.</p>
+      </div>
+      <div class="journal-compose">
+        <textarea id="journalText" placeholder="What happened today? What's sitting with you?"></textarea>
+        <div class="journal-thumbs" id="journalThumbs"></div>
+        <div class="journal-bar">
+          <label class="journal-photo-btn" for="journalPhotos">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Add photo
+          </label>
+          <input type="file" id="journalPhotos" accept="image/*" multiple />
+          <button class="btn btn-primary" id="journalSave" disabled>Save entry</button>
+        </div>
+        <div class="journal-privacy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Entries and photos live only in this browser. They aren't sent anywhere or encrypted at rest, so be careful with anything identifying patients.</span>
+        </div>
+      </div>
+      <div class="journal-list" id="journalList"></div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section class="view" id="viewAbout">
+      <div class="about-head">
+        <div class="eyebrow">What this is</div>
+        <h2>About Burnout <em>Pulse</em></h2>
+        <p>A small tool. Built with one job in mind: help you notice how you're doing before the week tells you the hard way.</p>
+      </div>
+      <div class="about-section">
+        <h3>What it does</h3>
+        <p>Once a week, you answer six short questions about how the week treated you. The app turns those into a single score and tracks the trend over time. If a score is heavy, it gives you specific guidance for the dimensions that are most strained. The coach is a space to think out loud, with the safety net of crisis resources if a conversation needs them.</p>
+        <p>It takes about two minutes. It is deliberately small.</p>
+      </div>
+      <div class="about-section">
+        <h3>The six dimensions</h3>
+        <p>The score is built from six axes drawn from the burnout research literature, in particular the work of Christina Maslach. The wording is adapted to specialty, but the underlying axes stay the same so your trend remains comparable.</p>
+        <div class="about-dim-list" id="aboutDims"></div>
+      </div>
+      <div class="about-section">
+        <h3>Your privacy</h3>
+        <p>Everything in Burnout Pulse stays in this browser. Your check-ins, your coach conversations, your journal, your friends list. None of it is sent to a server in this build.</p>
+        <p>That means it's private from anyone except whoever has access to this device. It also means clearing your browser data erases your history, and using a different browser or device starts you fresh. It is not a clinical record system, and it shouldn't be treated as one.</p>
+      </div>
+      <div class="about-section">
+        <h3>What it isn't</h3>
+        <p>Not a diagnostic tool. Not a substitute for talking to a clinician, a counsellor, or a trusted colleague. The coach is supportive, but it's not a therapist, and when it senses you're in crisis it will say so and point you to people who are.</p>
+      </div>
+      <div class="about-foot">
+        Burnout Pulse &middot; Build v13<br />
+        <em>Made with care, for the people who care for everyone else.</em>
+      </div>
+    </section>
+
+  <footer class="foot" id="footer" hidden>
+    Burnout Pulse is a self-reflection tool, not a diagnostic instrument.<br />
+    <em>The coach is supportive, not a substitute for a clinician or counsellor.</em>
+  </footer>
+</div>
+
+<!-- chat drawer -->
+<div class="drawer-scrim" id="drawerScrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="friend-avatar" id="drawerAvatar"></div>
+    <div class="dh-name" id="drawerName"></div>
+    <button class="icon-btn" id="drawerClose" aria-label="Close">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-thread" id="drawerThread"></div>
+  <div class="drawer-compose">
+    <div class="compose-inner">
+      <textarea id="drawerInput" rows="1" placeholder="Message"></textarea>
+      <button class="compose-send" id="drawerSend" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   BURNOUT PULSE: application logic
+   Local-first. The default build stores everything in localStorage and
+   makes no network calls. The coach runs on a context-aware local
+   fallback until an API key is configured (see api/coach.js + README).
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  /* ---------- brand mark ---------- */
+  var MARK = function (size, stroke) {
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 48 48" fill="none">' +
+      '<circle cx="24" cy="24" r="21" stroke="' + stroke + '" stroke-width="2.4" opacity="0.32"/>' +
+      '<path d="M7 25h7l3.5-9 6 17 4-12 3 4h10" stroke="' + stroke + '" stroke-width="3" ' +
+      'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  };
+  document.getElementById("splashMark").innerHTML = MARK(64, "#c66b3d");
+  document.getElementById("gateMark").innerHTML = MARK(76, "#c66b3d");
+  document.getElementById("brandMark").innerHTML = MARK(30, "#c66b3d");
+
+  /* ---------- six dimensions ---------- */
+  var DIMENSIONS = [
+    { id: "energy", name: "Energy left over",
+      q: "By the end of a working day, how depleted do you feel?",
+      icon: '<path d="M13 2 3 14h7v8l10-12h-7V2z"/>' },
+    { id: "detach", name: "Connection to patients",
+      q: "How easy has it been to feel genuine care for the people you treat?",
+      icon: '<path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 13 12 21 12 21s4-3.1 7-7z"/>' },
+    { id: "efficacy", name: "Sense of doing good work",
+      q: "How often have you felt that your work actually made a difference?",
+      icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>' },
+    { id: "control", name: "Control over your day",
+      q: "How much say have you had over how your time gets spent?",
+      icon: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>' },
+    { id: "rest", name: "Recovery off the clock",
+      q: "How well has your time off actually restored you?",
+      icon: '<path d="M2 12h20"/><path d="M2 12a10 10 0 0 1 20 0"/><path d="M12 2v4"/><path d="m4.9 4.9 2.8 2.8"/><path d="m16.3 7.7 2.8-2.8"/>' },
+    { id: "dread", name: "How tomorrow feels",
+      q: "When you think about your next shift, what comes up?",
+      icon: '<circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>' }
+  ];
+
+  var SCALE = [
+    { cap: "Fine" }, { cap: "Mostly ok" }, { cap: "Stretched" },
+    { cap: "Struggling" }, { cap: "Running on empty" }
+  ];
+
+  /* ---------- specialties ----------
+     Broad enough that most physicians find themselves represented.
+     Each specialty has a short blurb (shown on the onboarding card)
+     and an icon. The override map below changes the wording of
+     specific dimensions for that specialty without changing the
+     scoring axes. */
+  var SPECIALTIES = [
+    { id: "em",    name: "Emergency Medicine",
+      blurb: "ER, urgent care, trauma response",
+      icon: '<path d="M12 2v6"/><path d="M9 5h6"/><circle cx="12" cy="14" r="8"/><path d="M12 11v6"/><path d="M9 14h6"/>' },
+    { id: "surg",  name: "Surgery",
+      blurb: "General, orthopedic, neuro, trauma",
+      icon: '<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/>' },
+    { id: "im",    name: "Internal Medicine",
+      blurb: "Inpatient and outpatient adult care",
+      icon: '<path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 13 12 21 12 21s4-3.1 7-7z"/>' },
+    { id: "fm",    name: "Family Medicine",
+      blurb: "Primary care across all ages",
+      icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+    { id: "peds",  name: "Pediatrics",
+      blurb: "Care for children and adolescents",
+      icon: '<circle cx="12" cy="10" r="6"/><path d="M6 16c0 4 3 6 6 6s6-2 6-6"/><circle cx="10" cy="9" r=".5" fill="currentColor"/><circle cx="14" cy="9" r=".5" fill="currentColor"/>' },
+    { id: "psych", name: "Psychiatry",
+      blurb: "Mental health, talk therapy, meds",
+      icon: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>' },
+    { id: "obgyn", name: "OB/GYN",
+      blurb: "Obstetrics, gynecology, women's health",
+      icon: '<circle cx="12" cy="9" r="5"/><path d="M12 14v8"/><path d="M9 19h6"/>' },
+    { id: "anes",  name: "Anesthesiology",
+      blurb: "OR, pain medicine, critical care",
+      icon: '<path d="M12 2v20"/><rect x="8" y="6" width="8" height="14" rx="2"/><path d="M8 10h8"/>' }
+  ];
+
+  /* The same six dimensions, with specialty-aware wording. A missing
+     key means "use the default from DIMENSIONS." Scoring is unchanged. */
+  var SPECIALTY_OVERRIDES = {
+    em: {
+      energy:   "By the end of a shift, how depleted do you feel?",
+      detach:   "How easy has it been to feel real care for patients during high-volume hours?",
+      control:  "How much say have you had over your pace and patient load this week?",
+      dread:    "When you think about your next shift, what comes up?"
+    },
+    surg: {
+      energy:   "After a long OR day, how depleted do you feel?",
+      efficacy: "How often have you felt that the operations you did this week actually made a difference?",
+      control:  "How much say have you had over your OR schedule and case load?",
+      dread:    "When you think about tomorrow's case list, what comes up?"
+    },
+    im: {
+      energy:   "By the end of rounds or clinic, how depleted do you feel?",
+      control:  "How much say have you had over your panel size and how time gets allocated?",
+      rest:     "How well has your time off the floor actually restored you?"
+    },
+    fm: {
+      detach:   "How easy has it been to feel real care for the patients in your panel?",
+      efficacy: "How often have you felt that your continuity care this week actually made a difference?",
+      control:  "How much say have you had over your schedule and the admin load on top of it?"
+    },
+    peds: {
+      detach:   "How easy has it been to feel real care for the kids and the families you treat?",
+      efficacy: "How often have you felt that the care you gave this week actually made a difference for these kids?",
+      dread:    "When you think about your next clinic or shift, what comes up?"
+    },
+    psych: {
+      energy:   "After a day of sessions, how depleted do you feel?",
+      detach:   "How easy has it been to stay present and engaged with patients during sessions?",
+      efficacy: "How often have you felt that your sessions this week actually moved something for someone?",
+      rest:     "How well has your time off actually restored you, after carrying others' weight?"
+    },
+    obgyn: {
+      energy:   "After a long day of clinic, deliveries, or OR, how depleted do you feel?",
+      control:  "How much say have you had over your schedule given on-call and deliveries?",
+      dread:    "When you think about your next shift or call, what comes up?"
+    },
+    anes: {
+      energy:   "After a full case list or call, how depleted do you feel?",
+      efficacy: "How often have you felt that your work in the OR this week actually made a difference?",
+      control:  "How much say have you had over your case mix and call load?"
+    }
+  };
+
+  function specialtyById(id) {
+    for (var i = 0; i < SPECIALTIES.length; i++) {
+      if (SPECIALTIES[i].id === id) return SPECIALTIES[i];
+    }
+    return null;
+  }
+
+  function dimensionFor(dim, specialtyId) {
+    var copy = { id: dim.id, name: dim.name, q: dim.q, icon: dim.icon };
+    var overrides = SPECIALTY_OVERRIDES[specialtyId];
+    if (overrides && overrides[dim.id]) copy.q = overrides[dim.id];
+    return copy;
+  }
+
+  /* ---------- per-dimension advice ----------
+     Two tiers: ok (answer 0-1) and strained (answer 2-4).
+     Written plain, specific, no filler. */
+  var ADVICE = {
+    energy: {
+      ok: "Energy is holding. Worth noticing what protected it this week so you can repeat it.",
+      strained: "End-of-day depletion is the clearest early sign of burnout. Pick one recovery anchor and defend it: a real lunch away from a screen, or a hard stop on one task you keep carrying home. One, not five."
+    },
+    detach: {
+      ok: "You still feel connected to the people you treat. That connection is part of what makes the work bearable.",
+      strained: "Feeling less for patients is not a character flaw. It is what exhaustion does to empathy. Treat it as a fuel gauge, not a verdict. It tends to recover when the other dimensions do."
+    },
+    efficacy: {
+      ok: "You can still see that your work matters. Hold onto specific moments, not just the general sense.",
+      strained: "When the sense of doing good work fades, look for one concrete thing that went right this week, however small. Burnout erases those from memory first, so writing one down is worth more than it sounds."
+    },
+    control: {
+      ok: "You had a reasonable say over your time. Control is one of the strongest buffers against burnout.",
+      strained: "Low control is one of the biggest drivers of burnout, and often the hardest to fix alone. Name one specific process that wasted your time this week, and raise that one thing with someone who can change it."
+    },
+    rest: {
+      ok: "Your time off is doing its job. That is not a given in this work.",
+      strained: "If time off is not restoring you, the problem is usually quality, not quantity. Protect one stretch of time that is genuinely yours, with no charts and no clinical reading. Even a short one counts if it is real."
+    },
+    dread: {
+      ok: "You are not dreading the next shift. That is a good sign worth noticing.",
+      strained: "Dread before a shift is worth taking seriously, especially if it is becoming the norm. If this stays high for more than a couple of weeks, that is a clear reason to talk to someone, a colleague you trust or your wellbeing office."
+    }
+  };
+
+  var REFLECT_PROMPTS = [
+    "What is one thing this week asked of you that you would not ask of a colleague?",
+    "When did you last feel like the doctor you set out to be?",
+    "If a friend described your week back to you, what would you tell them to change?",
+    "What small part of the job still feels worth it?",
+    "Where did your time go that you wish it hadn't?"
+  ];
+
+  /* ---------- storage ---------- */
+  var LS = window.localStorage;
+  var K_USERS = "bp.accounts";
+  var K_ACTIVE = "bp.active";
+  var K_BOARD = "bp.board";
+  var keyFor = function (email) { return "bp.data." + btoa(email.toLowerCase()); };
+
+  function readUsers() { try { return JSON.parse(LS.getItem(K_USERS) || "{}"); } catch (e) { return {}; } }
+  function writeUsers(u) { LS.setItem(K_USERS, JSON.stringify(u)); }
+  function readData(email) { try { return JSON.parse(LS.getItem(keyFor(email)) || "null"); } catch (e) { return null; } }
+  function writeData(email, d) { LS.setItem(keyFor(email), JSON.stringify(d)); }
+  function readBoard() { try { return JSON.parse(LS.getItem(K_BOARD) || "[]"); } catch (e) { return []; } }
+  function writeBoard(b) { LS.setItem(K_BOARD, JSON.stringify(b)); }
+
+  /* ---------- state ---------- */
+  var state = {
+    email: null, name: null, specialty: null,
+    answers: {},
+    history: [],          // [{date,score,band,answers}]
+    notes: {},
+    coachLog: [],         // [{role:'user'|'coach', text, at}]
+    onBoard: false,
+    handle: null,
+    friends: [],          // [{email, name, messages:[{from:'me'|'them',text,at}]}]
+    journal: []           // [{id, at, text, photos:[dataURL]}]
+  };
+
+  /* ---------- scoring ---------- */
+  function computeScore(answers) {
+    var keys = Object.keys(answers);
+    if (keys.length < DIMENSIONS.length) return null;
+    var raw = 0;
+    keys.forEach(function (k) { raw += answers[k]; });
+    return Math.round((raw / (DIMENSIONS.length * 4)) * 100);
+  }
+  function bandFor(score) {
+    if (score === null) return { key: "none", label: "Not scored yet", title: "", desc: "", color: "#8b9d83" };
+    if (score <= 24) return { key: "steady", label: "Steady", color: "#5a6b4a",
+      title: "You're holding steady",
+      desc: "Most dimensions look healthy this week. Worth noticing what's working so you can protect it." };
+    if (score <= 49) return { key: "strained", label: "Some strain", color: "#c08e3a",
+      title: "A few things are pulling on you",
+      desc: "Nothing alarming, but a couple of dimensions are stretched. A small change now is easier than a big one later." };
+    if (score <= 74) return { key: "heavy", label: "Running heavy", color: "#c66b3d",
+      title: "This is a heavy stretch",
+      desc: "Several dimensions are strained at once. This is a good week to name it out loud to someone you trust." };
+    return { key: "depleted", label: "Depleted", color: "#a8542c",
+      title: "You're close to empty",
+      desc: "Most dimensions are deep in the red. Please treat this as a reason to reach out, not a number to sit with alone." };
+  }
+
+  /* ---------- DOM ---------- */
+  var $ = function (id) { return document.getElementById(id); };
+  var splash = $("splash"), app = $("app");
+  var gate = $("gate"), topbar = $("topbar"), shell = $("shell"), footer = $("footer");
+
+  /* ===================================================================
+     AUTH
+     =================================================================== */
+  var mode = "signin";
+  function setMode(m) {
+    mode = m;
+    var signup = m === "signup";
+    $("nameField").hidden = !signup;
+    $("passHint").hidden = !signup;
+    $("authBtn").textContent = signup ? "Create account" : "Sign in";
+    $("switchPrompt").textContent = signup ? "Already have an account?" : "New to Burnout Pulse?";
+    $("switchBtn").textContent = signup ? "Sign in" : "Create an account";
+    $("passInput").autocomplete = signup ? "new-password" : "current-password";
+    $("formError").hidden = true;
+  }
+  $("switchBtn").addEventListener("click", function () {
+    setMode(mode === "signin" ? "signup" : "signin");
+  });
+  function showFormError(msg) { var e = $("formError"); e.textContent = msg; e.hidden = false; }
+
+  function handleAuth() {
+    var email = $("emailInput").value.trim();
+    var pass = $("passInput").value;
+    var name = $("nameInput").value.trim();
+    var users = readUsers();
+    if (!email || email.indexOf("@") < 1) return showFormError("Enter a valid email address.");
+    var ekey = email.toLowerCase();
+    if (mode === "signup") {
+      if (!name) return showFormError("Add a first name so the app can greet you.");
+      if (pass.length < 10) return showFormError("Passphrase needs at least 10 characters.");
+      if (users[ekey]) return showFormError("An account already exists for that email. Try signing in.");
+      // Sign-up routes to onboarding (doctor type) instead of straight to the app.
+      users[ekey] = { name: name, pass: btoa(pass), specialty: null };
+      writeUsers(users);
+      writeData(email, blankData());
+      LS.setItem(K_ACTIVE, email);
+      pendingAuth = { email: email, name: name };
+      showOnboarding();
+    } else {
+      var u = users[ekey];
+      if (!u) return showFormError("No account found for that email. Create one first.");
+      if (btoa(pass) !== u.pass) return showFormError("That passphrase doesn't match.");
+      // Returning users: if they somehow never picked a specialty, send them there;
+      // otherwise box-open straight in.
+      if (!u.specialty) {
+        LS.setItem(K_ACTIVE, email);
+        pendingAuth = { email: email, name: u.name };
+        showOnboarding();
+      } else {
+        playBoxOpenInto(function () { enterApp(email, u.name, u.specialty); });
+      }
+    }
+  }
+  $("authBtn").addEventListener("click", handleAuth);
+  $("passInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleAuth(); });
+  $("signOutBtn").addEventListener("click", function () {
+    LS.removeItem(K_ACTIVE);
+    location.reload();
+  });
+
+  function blankData() {
+    return { history: [], notes: {}, coachLog: [], onBoard: false, handle: null, friends: [], journal: [] };
+  }
+
+  /* ===================================================================
+     ENTER APP
+     =================================================================== */
+  function enterApp(email, name, specialty) {
+    state.email = email;
+    state.name = name;
+    state.specialty = specialty || null;
+    var d = readData(email) || blankData();
+    state.history = d.history || [];
+    state.notes = d.notes || {};
+    state.coachLog = d.coachLog || [];
+    state.onBoard = !!d.onBoard;
+    state.handle = d.handle || null;
+    state.friends = d.friends || [];
+    state.journal = d.journal || [];
+    state.answers = {};
+    LS.setItem(K_ACTIVE, email);
+
+    // Hide gate, onboarding, and reveal the main app.
+    gate.hidden = true;
+    $("onboard").hidden = true;
+    topbar.hidden = false;
+    shell.hidden = false;
+    footer.hidden = false;
+
+    var spec = specialtyById(state.specialty);
+    $("greetLine").innerHTML = "How are you, <em>really</em>, " + escapeHtml(name) + "?";
+    $("weekTag").textContent = "Week of " + weekLabel(new Date());
+    // Specialty appears as a small tag under the eyebrow if set.
+    var specTag = $("specTag");
+    if (specTag) {
+      if (spec) {
+        specTag.textContent = spec.name;
+        specTag.hidden = false;
+      } else {
+        specTag.hidden = true;
+      }
+    }
+
+    buildDimensions();
+    renderScore();
+    renderTrend();
+    renderCoach();
+    renderJournal();
+    renderLeaderboard();
+    renderFriends();
+    renderAboutDims();
+    switchTab("checkin");
+  }
+
+  function persist() {
+    writeData(state.email, {
+      history: state.history, notes: state.notes, coachLog: state.coachLog,
+      onBoard: state.onBoard, handle: state.handle, friends: state.friends,
+      journal: state.journal
+    });
+  }
+
+  /* ===================================================================
+     ASSESSMENT
+     =================================================================== */
+  function buildDimensions() {
+    var wrap = $("dims");
+    wrap.innerHTML = "";
+    DIMENSIONS.forEach(function (rawDim) {
+      var dim = dimensionFor(rawDim, state.specialty);
+      var card = document.createElement("div");
+      card.className = "dim";
+      card.id = "dim-" + dim.id;
+      var scaleHtml = SCALE.map(function (s, i) {
+        return '<button class="scale-opt" data-dim="' + dim.id + '" data-val="' + i + '" aria-label="' + s.cap + '">' +
+          '<span class="scale-dot"></span><span class="scale-cap">' + s.cap + '</span></button>';
+      }).join("");
+      card.innerHTML =
+        '<div class="dim-top"><div class="dim-icon">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + dim.icon + '</svg>' +
+        '</div><div class="dim-text"><h4>' + dim.name + '</h4><p>' + dim.q + '</p></div></div>' +
+        '<div class="scale">' + scaleHtml + '</div>';
+      wrap.appendChild(card);
+    });
+    wrap.querySelectorAll(".scale-opt").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var dimId = btn.dataset.dim, val = parseInt(btn.dataset.val, 10);
+        state.answers[dimId] = val;
+        var card = $("dim-" + dimId);
+        card.querySelectorAll(".scale-opt").forEach(function (o) { o.classList.toggle("picked", o === btn); });
+        card.classList.add("answered");
+        renderScore();
+      });
+    });
+  }
+
+  function renderScore() {
+    var answered = Object.keys(state.answers).length;
+    var total = DIMENSIONS.length;
+    $("dimCount").textContent = answered + " of " + total;
+    var score = computeScore(state.answers);
+    var ring = $("ringFill"), circ = 402;
+    var fillPct = score !== null ? score / 100 : answered / total;
+    ring.style.strokeDashoffset = circ * (1 - fillPct);
+    var band = bandFor(score);
+    ring.style.stroke = score !== null ? band.color : "#c08e3a";
+    $("ringScore").textContent = score !== null ? score : answered === 0 ? "\u2014" : "\u00b7";
+    var pb = $("pulseBand");
+    pb.textContent = band.label;
+    pb.style.background = "color-mix(in srgb," + band.color + " 18%,transparent)";
+    pb.style.color = band.color;
+    if (score !== null) {
+      $("pulseTitle").textContent = band.title;
+      $("pulseDesc").textContent = band.desc;
+    } else {
+      $("pulseTitle").textContent = "Your pulse, once you finish";
+      $("pulseDesc").textContent = answered === 0
+        ? "Move through the six prompts below. The ring fills as you go."
+        : (total - answered) + " more to go. The ring shows where you are so far.";
+    }
+    var ready = score !== null;
+    $("saveBtn").disabled = !ready;
+    $("saveTitle").textContent = ready ? "Ready when you are" : "Answer all six to save";
+    $("saveSub").textContent = ready
+      ? "This check-in logs to this device only."
+      : (total - answered) + " dimension" + (total - answered === 1 ? "" : "s") + " left.";
+  }
+
+  $("saveBtn").addEventListener("click", function () {
+    var score = computeScore(state.answers);
+    if (score === null) return;
+    var band = bandFor(score);
+    var entry = {
+      date: new Date().toISOString(), score: score, band: band.label,
+      answers: Object.assign({}, state.answers)
+    };
+    state.history.unshift(entry);
+    if (state.history.length > 52) state.history = state.history.slice(0, 52);
+    if (state.onBoard) syncBoard();
+    persist();
+    renderTrend();
+    toast("Check-in saved");
+    state.answers = {};
+    buildDimensions();
+    renderScore();
+    setTimeout(function () { switchTab("trend"); }, 700);
+  });
+
+  /* ===================================================================
+     TREND + ADVICE
+     =================================================================== */
+  function renderTrend() {
+    var body = $("historyBody");
+    body.innerHTML = "";
+    if (state.history.length === 0) {
+      body.innerHTML =
+        '<div class="history-empty">' +
+        '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#b08b6e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>' +
+        '<p>No check-ins yet. Once you save your first one, your trend and advice show up here.</p></div>';
+      $("adviceBlock").hidden = true;
+      return;
+    }
+    var list = document.createElement("div");
+    list.className = "history-list";
+    state.history.slice(0, 8).forEach(function (entry, i) {
+      var band = bandFor(entry.score);
+      var prev = state.history[i + 1];
+      var trend = "first", tClass = "trend-flat", tIcon = "";
+      if (prev) {
+        var diff = entry.score - prev.score;
+        if (diff > 2) { trend = "+" + diff; tClass = "trend-up";
+          tIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 15 6-6 6 6"/></svg>'; }
+        else if (diff < -2) { trend = String(diff); tClass = "trend-down";
+          tIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>'; }
+        else { trend = "steady"; }
+      }
+      var row = document.createElement("div");
+      row.className = "hrow";
+      row.innerHTML =
+        '<div class="hrow-score" style="background:' + band.color + '">' + entry.score + '</div>' +
+        '<div class="hrow-meta"><div class="hrow-date">' + fullDate(entry.date) + '</div>' +
+        '<div class="hrow-band">' + band.label + '</div></div>' +
+        '<div class="hrow-trend ' + tClass + '">' + tIcon + trend + '</div>';
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+    renderAdvice(state.history[0]);
+  }
+
+  function renderAdvice(entry) {
+    var block = $("adviceBlock"), wrap = $("adviceWrap");
+    block.hidden = false;
+    wrap.innerHTML = "";
+    DIMENSIONS.forEach(function (dim) {
+      var v = entry.answers[dim.id];
+      var strained = v >= 2;
+      var text = strained ? ADVICE[dim.id].strained : ADVICE[dim.id].ok;
+      var dotColor = v <= 1 ? "#5a6b4a" : v === 2 ? "#c08e3a" : v === 3 ? "#c66b3d" : "#a8542c";
+      var tag = v <= 1 ? "Holding" : v === 2 ? "Watch" : "Needs care";
+      var card = document.createElement("div");
+      card.className = "advice-card";
+      card.innerHTML =
+        '<div class="advice-head">' +
+        '<span class="advice-dot" style="background:' + dotColor + '"></span>' +
+        '<h4>' + dim.name + '</h4>' +
+        '<span class="advice-tag" style="background:color-mix(in srgb,' + dotColor + ' 16%,transparent);color:' + dotColor + '">' + tag + '</span>' +
+        '</div><p>' + text + '</p>';
+      wrap.appendChild(card);
+    });
+  }
+
+  /* ===================================================================
+     COACH
+     The coach is warm but honest. It never invents facts about the
+     user. The safety layer scans every user message: ordinary venting
+     passes through untouched; genuine distress keeps the coach warm
+     AND adds crisis resources in the same reply.
+     =================================================================== */
+
+  /* Distress signals. Deliberately conservative: this triggers the
+     resource card, it does not block the conversation. */
+  var DISTRESS = [
+    "kill myself", "end my life", "end it all", "want to die", "better off dead",
+    "suicide", "suicidal", "harm myself", "hurt myself", "self harm", "self-harm",
+    "cut myself", "overdose", "no reason to live", "can't go on", "cant go on",
+    "don't want to be here", "dont want to be here", "no point anymore",
+    "everyone would be better without me", "take my own life"
+  ];
+  function detectDistress(text) {
+    var t = " " + text.toLowerCase().replace(/[^a-z\s']/g, " ") + " ";
+    return DISTRESS.some(function (p) { return t.indexOf(p) !== -1; });
+  }
+
+  var CARE_BLOCK =
+    "I want to slow down here, because what you just said matters to me.\n\n" +
+    "I'm a supportive space to think, but I'm not the right kind of help for what you're carrying right now, and you deserve someone who is.\n\n" +
+    "Please reach out to one of these. They are for doctors, they are free, and they are confidential:\n\n" +
+    "\u2022 Physician Support Line: 1-888-409-0141, staffed by psychiatrists\n" +
+    "\u2022 If you're in crisis right now: call or text 988\n\n" +
+    "You don't have to have the right words ready. You can just call. I'll still be here after.";
+
+  function renderCoach() {
+    var thread = $("coachThread");
+    thread.innerHTML = "";
+    if (state.coachLog.length === 0) {
+      var intro = document.createElement("div");
+      intro.className = "coach-greeting";
+      intro.innerHTML =
+        '<div class="coach-mark">' + MARK(40, "#c66b3d") + '</div>' +
+        "Hi " + escapeHtml(state.name) + ". This is your space. " +
+        "Tell me how the day went, or what's sitting on your mind. " +
+        "I'll keep what you say here on this device.";
+      thread.appendChild(intro);
+      return;
+    }
+    state.coachLog.forEach(function (m) { appendBubble(m.role, m.text, false); });
+    scrollCoach();
+  }
+
+  function appendBubble(role, text, animate) {
+    var thread = $("coachThread");
+    var greeting = thread.querySelector(".coach-greeting");
+    if (greeting) greeting.remove();
+    var b = document.createElement("div");
+    b.className = role === "user" ? "bubble bubble-user"
+                : role === "care" ? "bubble bubble-care" : "bubble bubble-coach";
+    if (role === "care") b.innerHTML = formatCare(text);
+    else b.textContent = text;
+    if (!animate) b.style.animation = "none";
+    thread.appendChild(b);
+    return b;
+  }
+
+  function formatCare(text) {
+    var html = escapeHtml(text)
+      .replace(/1-888-409-0141/g, '<a href="tel:18884090141">1-888-409-0141</a>')
+      .replace(/(call or text 988)/g, '<a href="sms:988">$1</a>');
+    return html;
+  }
+
+  function scrollCoach() {
+    var t = $("coachThread");
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }
+
+  function showTyping() {
+    var thread = $("coachThread");
+    var t = document.createElement("div");
+    t.className = "typing"; t.id = "typingDots";
+    t.innerHTML = "<span></span><span></span><span></span>";
+    thread.appendChild(t);
+    scrollCoach();
+  }
+  function hideTyping() {
+    var t = $("typingDots");
+    if (t) t.remove();
+  }
+
+  var coachInput = $("coachInput");
+  coachInput.addEventListener("input", function () {
+    coachInput.style.height = "auto";
+    coachInput.style.height = Math.min(coachInput.scrollHeight, 120) + "px";
+    $("coachSend").disabled = coachInput.value.trim().length === 0;
+  });
+  coachInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendToCoach(); }
+  });
+  $("coachSend").addEventListener("click", sendToCoach);
+
+  var coachBusy = false;
+  function sendToCoach() {
+    var text = coachInput.value.trim();
+    if (!text || coachBusy) return;
+    coachBusy = true;
+    coachInput.value = "";
+    coachInput.style.height = "auto";
+    $("coachSend").disabled = true;
+
+    appendBubble("user", text, true);
+    state.coachLog.push({ role: "user", text: text, at: Date.now() });
+    persist();
+    scrollCoach();
+
+    var distress = detectDistress(text);
+    showTyping();
+
+    if (distress) {
+      // Crisis path. The keyword-matched cheerful reply must never run
+      // here. The coach gives one short, warm acknowledgment, then the
+      // care block. Nothing else.
+      var ack =
+        "I hear you, and I'm really glad you said that out loud to me " +
+        "rather than carrying it alone. I'm not going to rush past it.";
+      setTimeout(function () {
+        hideTyping();
+        appendBubble("coach", ack, true);
+        state.coachLog.push({ role: "coach", text: ack, at: Date.now() });
+        scrollCoach();
+        setTimeout(function () {
+          appendBubble("care", CARE_BLOCK, true);
+          state.coachLog.push({ role: "care", text: CARE_BLOCK, at: Date.now() });
+          persist();
+          scrollCoach();
+          coachBusy = false;
+        }, 800);
+      }, 900);
+      return;
+    }
+
+    getCoachReply(text, function (reply) {
+      hideTyping();
+      appendBubble("coach", reply, true);
+      state.coachLog.push({ role: "coach", text: reply, at: Date.now() });
+      persist();
+      scrollCoach();
+      coachBusy = false;
+    });
+  }
+
+  /* The reply source. The coach calls the /api/coach endpoint, which
+     returns a real Claude reply when an API key is configured on the
+     deployment. If that endpoint is unreachable (opened as a local
+     file, or no key set), it falls back to the local matcher so the
+     app still works. Set window.BP_COACH_ENDPOINT to override the path.
+     done() receives (replyText, isCare). */
+  function getCoachReply(text, done) {
+    var endpoint = window.BP_COACH_ENDPOINT || "/api/coach";
+    var usingFile = location.protocol === "file:";
+    var delay = 700 + Math.random() * 700;
+    // A local file:// open has no server; skip the fetch entirely.
+    if (usingFile && !window.BP_COACH_ENDPOINT) {
+      setTimeout(function () { done(localCoachReply(text), false); }, delay);
+      return;
+    }
+    fetch(endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        message: text,
+        history: state.coachLog.slice(-12),
+        context: buildCoachContext()
+      })
+    })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (d) {
+        if (d.reply) { coachLiveMode(true); done(d.reply, d.care === true); }
+        else done(localCoachReply(text), false);
+      })
+      .catch(function () { coachLiveMode(false); done(localCoachReply(text), false); });
+  }
+
+  /* Reflects the coach's real state in the compose note, so the label
+     is honest rather than hard-coded. */
+  var coachModeKnown = false;
+  function coachLiveMode(isLive) {
+    var note = $("coachNote");
+    if (isLive) {
+      note.innerHTML = "Saved on this device. <strong>Live coach</strong> &middot; full conversation.";
+    } else if (!coachModeKnown) {
+      note.innerHTML = "Saved on this device. <strong>Local mode</strong> &middot; deploy with an API key for the full coach.";
+    }
+    coachModeKnown = true;
+  }
+
+  function buildCoachContext() {
+    var latest = state.history[0] || null;
+    var ctx = { name: state.name, latestScore: latest ? latest.score : null,
+                latestBand: latest ? latest.band : null, strained: [] };
+    if (latest) {
+      DIMENSIONS.forEach(function (d) {
+        if (latest.answers[d.id] >= 3) ctx.strained.push(d.name);
+      });
+    }
+    if (state.history.length >= 2) {
+      ctx.direction = state.history[0].score - state.history[1].score;
+    }
+    return ctx;
+  }
+
+  /* Local fallback. This is NOT the real coach: it cannot reason or
+     answer open questions. It is a stopgap for when the API is not
+     reachable. It varies its phrasing and never repeats the previous
+     line, so it reads as a holding response rather than a stuck loop. */
+  var lastLocalParts = { lead: -1, close: -1 };
+
+  function pick(arr, slot) {
+    if (arr.length === 1) return arr[0];
+    var i;
+    do { i = Math.floor(Math.random() * arr.length); }
+    while (i === lastLocalParts[slot]);
+    lastLocalParts[slot] = i;
+    return arr[i];
+  }
+
+  var LEADS = {
+    heavy: [
+      "That sounds genuinely depleting, and I won't pretend one conversation fixes it.",
+      "Carrying that much for that long wears anyone down. It makes sense that you're feeling it.",
+      "That's a heavy load to be holding. I'm glad you put it into words here."
+    ],
+    sad: [
+      "I'm sorry it's sitting this heavy right now.",
+      "That sounds like a lonely thing to carry. You don't have to talk yourself out of feeling it.",
+      "It's okay that this is hard. You don't have to dress it up for me."
+    ],
+    angry: [
+      "That frustration makes sense. Anger in this work usually points at something real.",
+      "You sound fed up, and from what you're describing, fairly so.",
+      "That's the kind of thing that would get under anyone's skin."
+    ],
+    anxious: [
+      "That worry sounds tiring to carry around.",
+      "Anticipating the next hard thing is its own kind of exhausting.",
+      "That unease makes sense. Let's look at it plainly rather than let it spin."
+    ],
+    good: [
+      "I'm glad to hear that. The good stretches are worth noticing too.",
+      "That's good. It's easy to rush past the better days, so let's not.",
+      "That lands as real progress. Worth sitting with for a second."
+    ],
+    neutral: [
+      "I'm listening. Tell me where you want to start.",
+      "Thanks for bringing this here. I'm with you.",
+      "Okay. I'm paying attention, take it at your pace."
+    ]
+  };
+
+  var CLOSERS = {
+    hard: [
+      "What would feel like the smallest real relief this week? Not the ideal fix, the smallest true one.",
+      "If one piece of this got lighter, which piece would you pick?",
+      "What part of this is heaviest right now?"
+    ],
+    good: [
+      "What made the difference? Naming it makes it easier to find again.",
+      "What would it take to give yourself more of that?",
+      "What felt different about today?"
+    ],
+    asking: [
+      "I don't have a clean answer, and I won't invent one. Tell me what's underneath the question and we can think it through.",
+      "That's a real question. What's your own gut say, even if you're not sure of it?",
+      "Let's not rush an answer. What's making this one feel pressing?"
+    ],
+    neutral: [
+      "Tell me more about what's on your mind.",
+      "What's been sitting with you most?",
+      "Where does this feel like it's coming from?"
+    ]
+  };
+
+  function localCoachReply(text) {
+    var ctx = buildCoachContext();
+    var t = text.toLowerCase();
+
+    var heavy = /tired|exhausted|drained|burnt out|burned out|overwhelm|too much|can't keep|cant keep|nothing left|running on empty/.test(t);
+    var sad = /\bsad\b|feeling low|so low|cry|crying|lonely|hopeless|feel numb/.test(t);
+    var angry = /angry|furious|frustrat|so unfair|fed up|sick of/.test(t);
+    var anxious = /anxious|worried|scared|afraid|nervous|panic|dread/.test(t);
+    var good = /\bgood day|went well|felt great|proud of|so happy|grateful|feeling better|much better|a good week/.test(t);
+    var asking = /\?\s*$/.test(text) || /^(what|how|why|should|can you|do you|is it)\b/.test(t);
+
+    var mood = heavy ? "heavy" : sad ? "sad" : angry ? "angry"
+             : anxious ? "anxious" : good ? "good" : "neutral";
+    var lead = pick(LEADS[mood], "lead");
+
+    var middle = "";
+    if (ctx.latestScore !== null) {
+      if (ctx.strained.length && (heavy || sad || anxious)) {
+        middle = " Your last check-in flagged " + joinNames(ctx.strained) +
+          ", so what you're describing lines up with what the scores showed.";
+      } else if (ctx.direction > 8) {
+        middle = " Your score climbed since the week before too, so this has been building.";
+      } else if (ctx.direction < -8 && good) {
+        middle = " Your last score came down as well, which fits a better stretch.";
+      }
+    } else {
+      middle = " You haven't done a check-in yet. Once you do, I can talk about specifics rather than generalities.";
+    }
+
+    var closeKey = asking ? "asking"
+                 : (heavy || sad || anxious) ? "hard"
+                 : good ? "good" : "neutral";
+    var close = pick(CLOSERS[closeKey], "close");
+
+    return lead + middle + " " + close;
+  }
+
+  function joinNames(arr) {
+    if (arr.length === 1) return arr[0].toLowerCase();
+    if (arr.length === 2) return arr[0].toLowerCase() + " and " + arr[1].toLowerCase();
+    return arr.slice(0, -1).map(function (s) { return s.toLowerCase(); }).join(", ") +
+      ", and " + arr[arr.length - 1].toLowerCase();
+  }
+
+  /* ===================================================================
+     LEADERBOARD
+     =================================================================== */
+  function makeHandle() {
+    var animals = ["Heron", "Cedar", "Wren", "Otter", "Birch", "Lark", "Fern", "Sparrow", "Willow", "Finch"];
+    return animals[Math.floor(Math.random() * animals.length)] + "-" +
+      Math.floor(1000 + Math.random() * 9000);
+  }
+
+  function syncBoard() {
+    var board = readBoard();
+    var latest = state.history[0];
+    if (!latest) return;
+    var mine = board.filter(function (r) { return r.id !== state.handle; });
+    mine.push({ id: state.handle, name: state.handle, score: latest.score, at: Date.now() });
+    writeBoard(mine);
+  }
+  function removeFromBoard() {
+    var board = readBoard().filter(function (r) { return r.id !== state.handle; });
+    writeBoard(board);
+  }
+
+  $("lbToggle").addEventListener("click", function () {
+    var tg = $("lbToggle");
+    state.onBoard = !state.onBoard;
+    tg.classList.toggle("on", state.onBoard);
+    tg.setAttribute("aria-checked", state.onBoard ? "true" : "false");
+    if (state.onBoard) {
+      if (!state.handle) state.handle = makeHandle();
+      if (state.history.length) { syncBoard(); }
+      toast("You're on the leaderboard as " + state.handle);
+    } else {
+      removeFromBoard();
+      toast("Removed from the leaderboard");
+    }
+    persist();
+    renderLeaderboard();
+  });
+
+  function renderLeaderboard() {
+    var tg = $("lbToggle");
+    tg.classList.toggle("on", state.onBoard);
+    tg.setAttribute("aria-checked", state.onBoard ? "true" : "false");
+    var body = $("lbBody");
+    body.innerHTML = "";
+    body.style.animation = "rise var(--t-base) var(--ease-out) both";
+
+    if (!state.onBoard) {
+      body.innerHTML =
+        '<div class="empty-soft" style="margin-top:14px;">' +
+        '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b08b6e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M6 9H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2"/><path d="M6 15h12"/><path d="M8 9h8v6H8z"/></svg>' +
+        '<p>The leaderboard is off. Switch it on to compare your check-in score against others, anonymously. ' +
+        'A lower score is a calmer week.</p></div>';
+      return;
+    }
+    if (!state.history.length) {
+      body.innerHTML = '<div class="empty-soft" style="margin-top:14px;">' +
+        '<p>You\'re on the board. Save your first check-in and your score will appear here.</p></div>';
+      return;
+    }
+    var board = readBoard().slice().sort(function (a, b) { return a.score - b.score; });
+    var list = document.createElement("div");
+    list.className = "lb-list";
+    board.slice(0, 20).forEach(function (row, i) {
+      var isMe = row.id === state.handle;
+      var el = document.createElement("div");
+      el.className = "lb-row" + (isMe ? " is-me" : "");
+      el.innerHTML =
+        '<div class="lb-rank">' + (i + 1) + '</div>' +
+        '<div class="lb-name">' + escapeHtml(row.name) +
+        (isMe ? '<span class="me-tag">you</span>' : '') + '</div>' +
+        '<div class="lb-score">' + row.score + '</div>';
+      list.appendChild(el);
+    });
+    body.appendChild(list);
+    var note = document.createElement("p");
+    note.style.cssText = "font-size:.78rem;color:var(--text-soft);margin-top:12px;text-align:center;";
+    note.textContent = "Lower is calmer. The board shows anonymous handles only, never names or emails.";
+    body.appendChild(note);
+  }
+
+  /* ===================================================================
+     FRIENDS + CHAT
+     =================================================================== */
+  $("friendAddBtn").addEventListener("click", addFriend);
+  $("friendEmail").addEventListener("keydown", function (e) { if (e.key === "Enter") addFriend(); });
+
+  function addFriend() {
+    var email = $("friendEmail").value.trim().toLowerCase();
+    if (!email || email.indexOf("@") < 1) { toast("Enter a valid email"); return; }
+    if (email === state.email.toLowerCase()) { toast("That's your own email"); return; }
+    if (state.friends.some(function (f) { return f.email === email; })) {
+      toast("They're already in your friends"); return;
+    }
+    var name = email.split("@")[0].replace(/[._-]+/g, " ");
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    state.friends.push({ email: email, name: name, messages: [] });
+    $("friendEmail").value = "";
+    persist();
+    renderFriends();
+    toast("Added " + name);
+  }
+
+  function renderFriends() {
+    var body = $("friendBody");
+    body.innerHTML = "";
+    if (state.friends.length === 0) {
+      body.innerHTML =
+        '<div class="empty-soft" style="margin-top:16px;">' +
+        '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b08b6e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+        '<p>No friends added yet. Add someone by email to keep a private check-in thread with them.</p></div>';
+      return;
+    }
+    var list = document.createElement("div");
+    list.className = "friend-list";
+    state.friends.forEach(function (f, idx) {
+      var last = f.messages[f.messages.length - 1];
+      var preview = last ? (last.from === "me" ? "You: " : "") + last.text : "No messages yet";
+      var row = document.createElement("div");
+      row.className = "friend-row";
+      row.innerHTML =
+        '<div class="friend-avatar">' + escapeHtml(f.name.charAt(0).toUpperCase()) + '</div>' +
+        '<div class="friend-meta"><strong>' + escapeHtml(f.name) + '</strong>' +
+        '<span>' + escapeHtml(preview) + '</span></div>' +
+        '<div class="friend-open">Open</div>';
+      row.addEventListener("click", function () { openDrawer(idx); });
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+  }
+
+  /* ---- chat drawer ---- */
+  var activeFriend = -1;
+  function openDrawer(idx) {
+    activeFriend = idx;
+    var f = state.friends[idx];
+    $("drawerAvatar").textContent = f.name.charAt(0).toUpperCase();
+    $("drawerName").textContent = f.name;
+    renderDrawerThread();
+    $("drawer").classList.add("open");
+    $("drawer").setAttribute("aria-hidden", "false");
+    $("drawerScrim").classList.add("open");
+    setTimeout(function () { $("drawerInput").focus(); }, 320);
+  }
+  function closeDrawer() {
+    $("drawer").classList.remove("open");
+    $("drawer").setAttribute("aria-hidden", "true");
+    $("drawerScrim").classList.remove("open");
+    activeFriend = -1;
+  }
+  $("drawerClose").addEventListener("click", closeDrawer);
+  $("drawerScrim").addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && $("drawer").classList.contains("open")) closeDrawer();
+  });
+
+  function renderDrawerThread() {
+    var thread = $("drawerThread");
+    thread.innerHTML = "";
+    var f = state.friends[activeFriend];
+    if (f.messages.length === 0) {
+      var hint = document.createElement("div");
+      hint.className = "coach-greeting";
+      hint.style.padding = "10px 0";
+      hint.textContent = "This is the start of your thread with " + f.name + ".";
+      thread.appendChild(hint);
+      return;
+    }
+    f.messages.forEach(function (m) {
+      var b = document.createElement("div");
+      b.className = m.from === "me" ? "bubble bubble-user" : "bubble bubble-coach";
+      b.style.maxWidth = "88%";
+      b.textContent = m.text;
+      thread.appendChild(b);
+    });
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  var drawerInput = $("drawerInput");
+  drawerInput.addEventListener("input", function () {
+    drawerInput.style.height = "auto";
+    drawerInput.style.height = Math.min(drawerInput.scrollHeight, 110) + "px";
+  });
+  drawerInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendDrawer(); }
+  });
+  $("drawerSend").addEventListener("click", sendDrawer);
+
+  function sendDrawer() {
+    var text = drawerInput.value.trim();
+    if (text === "" || activeFriend < 0) return;
+    var f = state.friends[activeFriend];
+    f.messages.push({ from: "me", text: text, at: Date.now() });
+    drawerInput.value = "";
+    drawerInput.style.height = "auto";
+    persist();
+    renderDrawerThread();
+    renderFriends();
+  }
+
+  /* ===================================================================
+     TABS
+     =================================================================== */
+  function switchTab(which) {
+    var map = {
+      checkin: "viewCheckin", trend: "viewTrend", coach: "viewCoach",
+      journal: "viewJournal", people: "viewPeople", about: "viewAbout"
+    };
+    Object.keys(map).forEach(function (k) {
+      var view = $(map[k]);
+      if (!view) return;
+      view.classList.toggle("active", k === which);
+    });
+    $("tabCheckin").classList.toggle("active", which === "checkin");
+    $("tabTrend").classList.toggle("active", which === "trend");
+    $("tabCoach").classList.toggle("active", which === "coach");
+    $("tabJournal").classList.toggle("active", which === "journal");
+    $("tabPeople").classList.toggle("active", which === "people");
+    $("tabAbout").classList.toggle("active", which === "about");
+    $("footer").hidden = false;
+    if (which === "coach") {
+      setTimeout(scrollCoach, 80);
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+  $("tabCheckin").addEventListener("click", function () { switchTab("checkin"); });
+  $("tabTrend").addEventListener("click", function () { switchTab("trend"); });
+  $("tabCoach").addEventListener("click", function () { switchTab("coach"); });
+  $("tabJournal").addEventListener("click", function () { switchTab("journal"); });
+  $("tabPeople").addEventListener("click", function () { switchTab("people"); });
+  $("tabAbout").addEventListener("click", function () { switchTab("about"); });
+
+  $("subLeaderboard").addEventListener("click", function () {
+    $("subLeaderboard").classList.add("active");
+    $("subFriends").classList.remove("active");
+    $("panelLeaderboard").classList.add("active");
+    $("panelFriends").classList.remove("active");
+  });
+  $("subFriends").addEventListener("click", function () {
+    $("subFriends").classList.add("active");
+    $("subLeaderboard").classList.remove("active");
+    $("panelFriends").classList.add("active");
+    $("panelLeaderboard").classList.remove("active");
+  });
+
+  /* ===================================================================
+     AMBIENT SOUND
+     =================================================================== */
+  var audioCtx = null, audioNodes = null, soundOn = false;
+  function startSound() {
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return false;
+    audioCtx = new Ctx();
+    var master = audioCtx.createGain();
+    master.gain.setValueAtTime(0, audioCtx.currentTime);
+    master.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 2.5);
+    var lp = audioCtx.createBiquadFilter();
+    lp.type = "lowpass"; lp.frequency.value = 620;
+    lp.connect(master); master.connect(audioCtx.destination);
+    var oscs = [110, 110.6, 164.81].map(function (f) {
+      var o = audioCtx.createOscillator();
+      o.type = "sine"; o.frequency.value = f;
+      var g = audioCtx.createGain(); g.gain.value = 0.5;
+      o.connect(g); g.connect(lp); o.start();
+      return o;
+    });
+    audioNodes = { master: master, oscs: oscs };
+    return true;
+  }
+  function stopSound() {
+    if (!audioCtx || !audioNodes) return;
+    var now = audioCtx.currentTime;
+    audioNodes.master.gain.cancelScheduledValues(now);
+    audioNodes.master.gain.setValueAtTime(audioNodes.master.gain.value, now);
+    audioNodes.master.gain.linearRampToValueAtTime(0, now + 1.2);
+    var ctx = audioCtx, nodes = audioNodes;
+    setTimeout(function () {
+      nodes.oscs.forEach(function (o) { try { o.stop(); } catch (e) {} });
+      try { ctx.close(); } catch (e) {}
+    }, 1400);
+    audioCtx = null; audioNodes = null;
+  }
+  $("soundBtn").addEventListener("click", function () {
+    var btn = $("soundBtn");
+    if (soundOn) {
+      stopSound(); soundOn = false; btn.style.color = "";
+      toast("Ambient sound off");
+    } else {
+      if (startSound()) { soundOn = true; btn.style.color = "#c66b3d"; toast("Ambient sound on"); }
+      else toast("Sound isn't available in this browser");
+    }
+  });
+
+  /* ===================================================================
+     ONBOARDING (doctor type)
+     Inserted between sign-up and the main app. Lets returning users
+     who never picked also land here.
+     =================================================================== */
+  var pendingAuth = null;
+  var pickedSpecialty = null;
+
+  function renderOnboarding() {
+    var grid = $("onboardGrid");
+    grid.innerHTML = "";
+    SPECIALTIES.forEach(function (s) {
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "spec-card";
+      card.dataset.id = s.id;
+      card.innerHTML =
+        '<div class="spec-icon">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + s.icon + '</svg>' +
+        '</div>' +
+        '<div class="spec-name">' + s.name + '</div>' +
+        '<div class="spec-blurb">' + s.blurb + '</div>';
+      card.addEventListener("click", function () {
+        pickedSpecialty = s.id;
+        grid.querySelectorAll(".spec-card").forEach(function (c) {
+          c.classList.toggle("picked", c.dataset.id === s.id);
+        });
+        $("onboardContinue").disabled = false;
+      });
+      grid.appendChild(card);
+    });
+    $("onboardMark").innerHTML = MARK(60, "#c66b3d");
+  }
+
+  function showOnboarding() {
+    gate.hidden = true;
+    $("onboard").hidden = false;
+    pickedSpecialty = null;
+    renderOnboarding();
+    $("onboardContinue").disabled = true;
+    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  }
+
+  function commitSpecialtyAndEnter() {
+    if (!pendingAuth) return;
+    var auth = pendingAuth;
+    var users = readUsers();
+    var ekey = auth.email.toLowerCase();
+    if (users[ekey]) {
+      users[ekey].specialty = pickedSpecialty || null;
+      writeUsers(users);
+    }
+    pendingAuth = null;
+    var specId = pickedSpecialty;
+    pickedSpecialty = null;
+    // Box-open into the app from the onboarding card.
+    playBoxOpenInto(function () { enterApp(auth.email, auth.name, specId); });
+  }
+
+  $("onboardContinue").addEventListener("click", commitSpecialtyAndEnter);
+  $("onboardSkip").addEventListener("click", function () {
+    // Skipping is allowed. The dimensions just stay generic.
+    pickedSpecialty = null;
+    commitSpecialtyAndEnter();
+  });
+
+  /* ===================================================================
+     BOX-OPEN TRANSITION
+     Renders the box stage, plays the lid + sides animation, then runs
+     the supplied callback when the main app should mount. The callback
+     gets called partway through, so the app fades in under the box.
+     Respects prefers-reduced-motion by skipping the animation entirely.
+     =================================================================== */
+  function prefersReducedMotion() {
+    try {
+      return window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch (e) { return false; }
+  }
+
+  function playBoxOpenInto(callback) {
+    // Reduced-motion users get the same outcome with no animation.
+    if (prefersReducedMotion()) {
+      gate.hidden = true;
+      $("onboard").hidden = true;
+      callback();
+      return;
+    }
+    var stage = $("boxStage");
+    gate.hidden = true;
+    $("onboard").hidden = true;
+    stage.classList.remove("opening");
+    stage.classList.add("active");
+    void stage.offsetWidth;
+    stage.classList.add("opening");
+    setTimeout(function () {
+      app.classList.add("boxing-in");
+      callback();
+    }, 360);
+    setTimeout(function () {
+      stage.classList.remove("active", "opening");
+      app.classList.remove("boxing-in");
+    }, 1100);
+  }
+
+  /* ===================================================================
+     JOURNAL
+     Private to the user (same localStorage scope as everything else).
+     Photos are stored as data URLs so they survive page reload without
+     a server. We cap each photo at 1600px on the long edge to keep the
+     stored size reasonable.
+     =================================================================== */
+  var journalDraftPhotos = [];
+
+  $("journalText").addEventListener("input", updateJournalSaveState);
+  function updateJournalSaveState() {
+    var hasText = $("journalText").value.trim().length > 0;
+    var hasPhoto = journalDraftPhotos.length > 0;
+    $("journalSave").disabled = !(hasText || hasPhoto);
+  }
+
+  $("journalPhotos").addEventListener("change", function (e) {
+    var files = Array.prototype.slice.call(e.target.files || []);
+    var remaining = Math.max(0, 4 - journalDraftPhotos.length);
+    if (files.length > remaining) {
+      toast("Up to 4 photos per entry");
+      files = files.slice(0, remaining);
+    }
+    files.forEach(function (f) {
+      if (!/^image\//.test(f.type)) return;
+      shrinkImage(f, function (dataUrl) {
+        if (!dataUrl) return;
+        journalDraftPhotos.push(dataUrl);
+        renderJournalThumbs();
+        updateJournalSaveState();
+      });
+    });
+    e.target.value = "";
+  });
+
+  function shrinkImage(file, done) {
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var img = new Image();
+      img.onload = function () {
+        var maxEdge = 1600;
+        var w = img.width, h = img.height;
+        if (Math.max(w, h) > maxEdge) {
+          var ratio = maxEdge / Math.max(w, h);
+          w = Math.round(w * ratio); h = Math.round(h * ratio);
+        }
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        try { done(canvas.toDataURL("image/jpeg", 0.82)); }
+        catch (e) { done(null); }
+      };
+      img.onerror = function () { done(null); };
+      img.src = ev.target.result;
+    };
+    reader.onerror = function () { done(null); };
+    reader.readAsDataURL(file);
+  }
+
+  function renderJournalThumbs() {
+    var wrap = $("journalThumbs");
+    wrap.innerHTML = "";
+    journalDraftPhotos.forEach(function (src, i) {
+      var thumb = document.createElement("div");
+      thumb.className = "journal-thumb";
+      thumb.innerHTML = '<img src="' + src + '" alt="Photo ' + (i + 1) + '" />' +
+        '<button type="button" data-i="' + i + '" aria-label="Remove">&times;</button>';
+      thumb.querySelector("button").addEventListener("click", function (e) {
+        var idx = parseInt(e.currentTarget.dataset.i, 10);
+        journalDraftPhotos.splice(idx, 1);
+        renderJournalThumbs();
+        updateJournalSaveState();
+      });
+      wrap.appendChild(thumb);
+    });
+  }
+
+  $("journalSave").addEventListener("click", function () {
+    var text = $("journalText").value.trim();
+    if (!text && journalDraftPhotos.length === 0) return;
+    var entry = {
+      id: Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+      at: new Date().toISOString(),
+      text: text,
+      photos: journalDraftPhotos.slice()
+    };
+    state.journal.unshift(entry);
+    // Keep journal storage from runaway growth.
+    if (state.journal.length > 200) state.journal = state.journal.slice(0, 200);
+    try {
+      persist();
+      $("journalText").value = "";
+      journalDraftPhotos = [];
+      renderJournalThumbs();
+      updateJournalSaveState();
+      renderJournal();
+      toast("Journal entry saved");
+    } catch (e) {
+      // localStorage quota is the most likely failure with many photos.
+      state.journal.shift();
+      toast("Couldn't save. The browser is out of space for photos.");
+    }
+  });
+
+  function renderJournal() {
+    var list = $("journalList");
+    list.innerHTML = "";
+    if (state.journal.length === 0) {
+      list.innerHTML =
+        '<div class="empty-soft" style="margin-top:8px;">' +
+        '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b08b6e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+        '<p>Nothing here yet. Write the first entry above. Photos are optional.</p></div>';
+      return;
+    }
+    state.journal.forEach(function (entry) {
+      var row = document.createElement("div");
+      row.className = "journal-entry";
+      var d = new Date(entry.at);
+      var datePart = fullDate(entry.at);
+      var timePart = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+      var photosHtml = "";
+      if (entry.photos && entry.photos.length) {
+        photosHtml = '<div class="journal-entry-photos">' +
+          entry.photos.map(function (src, i) {
+            return '<img src="' + src + '" alt="Photo ' + (i + 1) + '" data-src="' + src + '" class="journal-img" />';
+          }).join("") + '</div>';
+      }
+      row.innerHTML =
+        '<div class="journal-entry-head">' +
+          '<div><div class="journal-entry-date">' + datePart + '</div>' +
+          '<div class="journal-entry-time">' + timePart + '</div></div>' +
+          '<button class="journal-entry-delete" data-id="' + entry.id + '" type="button">Delete</button>' +
+        '</div>' +
+        (entry.text ? '<div class="journal-entry-body">' + escapeHtml(entry.text) + '</div>' : '') +
+        photosHtml;
+      row.querySelector(".journal-entry-delete").addEventListener("click", function () {
+        if (!confirm("Delete this entry? It can't be undone.")) return;
+        state.journal = state.journal.filter(function (j) { return j.id !== entry.id; });
+        persist();
+        renderJournal();
+        toast("Entry deleted");
+      });
+      list.appendChild(row);
+    });
+    // Wire photo zoom on the newly rendered images.
+    list.querySelectorAll(".journal-img").forEach(function (img) {
+      img.addEventListener("click", function () { openPhotoViewer(img.dataset.src); });
+    });
+  }
+
+  /* ---- photo viewer ---- */
+  function openPhotoViewer(src) {
+    $("photoViewerImg").src = src;
+    $("photoViewer").classList.add("open");
+  }
+  function closePhotoViewer() {
+    $("photoViewer").classList.remove("open");
+    $("photoViewerImg").src = "";
+  }
+  $("photoViewerClose").addEventListener("click", closePhotoViewer);
+  $("photoViewer").addEventListener("click", function (e) {
+    if (e.target === $("photoViewer")) closePhotoViewer();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && $("photoViewer").classList.contains("open")) closePhotoViewer();
+  });
+
+  /* ===================================================================
+     ABOUT
+     Renders the dimension list once. The rest is static HTML.
+     =================================================================== */
+  function renderAboutDims() {
+    var wrap = $("aboutDims");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    var blurbs = {
+      energy:   "How depleted you feel at the end of the day.",
+      detach:   "How easily you can still feel real care for patients.",
+      efficacy: "How often you can see the work mattering.",
+      control:  "How much say you have over how your time goes.",
+      rest:     "How well your time off is restoring you.",
+      dread:    "What comes up when you think about the next shift."
+    };
+    DIMENSIONS.forEach(function (dim) {
+      var row = document.createElement("div");
+      row.className = "about-dim-row";
+      row.innerHTML =
+        '<div class="dim-icon">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + dim.icon + '</svg>' +
+        '</div>' +
+        '<div><strong>' + dim.name + '</strong>' +
+        '<p>' + blurbs[dim.id] + '</p></div>';
+      wrap.appendChild(row);
+    });
+  }
+
+
+  function toast(msg) {
+    var t = $("toast");
+    t.innerHTML =
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a9b8a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.classList.remove("show"); }, 2600);
+  }
+  function escapeHtml(s) {
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : String(s);
+    return d.innerHTML;
+  }
+  function weekLabel(d) {
+    var m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return m[d.getMonth()] + " " + d.getDate();
+  }
+  function fullDate(iso) {
+    var d = new Date(iso);
+    var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate();
+  }
+
+  /* ===================================================================
+     BOOT
+     Sequence:
+       1. Loading screen (always shown briefly).
+       2. If a session is active, play box-open straight into the app.
+       3. Otherwise reveal the pull-up handle; on pull-up, show the auth
+          gate. From there, sign-in goes through box-open; sign-up
+          routes through onboarding first.
+     =================================================================== */
+  function boot() {
+    app.hidden = false;
+    setMode("signin");
+    renderOnboarding();    // pre-build so it's ready when needed
+    renderAboutDims();     // dimension list on the about page
+
+    var active = LS.getItem(K_ACTIVE);
+    var hasSession = false;
+    if (active) {
+      var u = readUsers()[active.toLowerCase()];
+      if (u) hasSession = true;
+    }
+
+    // 1. The loading screen runs for a beat regardless of path.
+    var loadHold = prefersReducedMotion() ? 200 : 1400;
+    setTimeout(function () {
+      splash.classList.remove("loading");
+      if (hasSession) {
+        // 2. Returning user: dismiss splash, box-open into the app.
+        var u = readUsers()[active.toLowerCase()];
+        // Without a specialty, drop them into onboarding.
+        splash.classList.add("gone");
+        setTimeout(function () { splash.remove(); }, 500);
+        if (!u.specialty) {
+          pendingAuth = { email: active, name: u.name };
+          showOnboarding();
+        } else {
+          playBoxOpenInto(function () { enterApp(active, u.name, u.specialty); });
+        }
+      } else {
+        // 3. First-time user: arm the pull-up handle.
+        splash.classList.add("pullup-ready");
+        armPullUp();
+      }
+    }, loadHold);
+  }
+
+  /* ---------- pull-up gesture ----------
+     Touch drag-up on mobile. Pointer drag-up OR plain tap on desktop
+     (since "pull" doesn't translate to a mouse-only surface). A swipe
+     up past 40% of the splash height dismisses; tap on the handle does
+     the same. */
+  function armPullUp() {
+    var handle = $("pullup");
+    var startY = null;
+    var dragY = 0;
+    var height = window.innerHeight;
+    var dismissed = false;
+
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+      splash.classList.add("lifting");
+      setTimeout(function () {
+        splash.classList.add("gone");
+        gate.hidden = false;
+        // Focus the email input once the gate is visible.
+        setTimeout(function () {
+          try { $("emailInput").focus({ preventScroll: true }); } catch (e) {}
+        }, 60);
+        setTimeout(function () { splash.remove(); }, 600);
+      }, 220);
+    }
+
+    // Pointer (works for both touch and mouse).
+    handle.addEventListener("pointerdown", function (e) {
+      startY = e.clientY;
+      dragY = 0;
+      handle.setPointerCapture(e.pointerId);
+      handle.classList.add("dragging");
+    });
+    handle.addEventListener("pointermove", function (e) {
+      if (startY === null) return;
+      dragY = startY - e.clientY;
+      if (dragY > 0) {
+        // Translate the handle and lift the splash stack proportionally.
+        var lift = Math.min(dragY, height * 0.6);
+        handle.style.transform = "translateY(" + (-lift) + "px)";
+        var stack = splash.querySelector(".splash-stack");
+        if (stack) {
+          var p = lift / (height * 0.4);
+          stack.style.transform = "translateY(" + (-p * 26) + "px)";
+          stack.style.opacity = String(Math.max(0.45, 1 - p * 0.45));
+        }
+      }
+    });
+    function endDrag(e) {
+      if (startY === null) return;
+      handle.classList.remove("dragging");
+      try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+      if (dragY > height * 0.18) {
+        dismiss();
+      } else {
+        // Snap back.
+        handle.style.transform = "";
+        var stack = splash.querySelector(".splash-stack");
+        if (stack) { stack.style.transform = ""; stack.style.opacity = ""; }
+      }
+      startY = null;
+      dragY = 0;
+    }
+    handle.addEventListener("pointerup", endDrag);
+    handle.addEventListener("pointercancel", endDrag);
+
+    // Tap-to-open (desktop fallback, and a friendlier mobile option).
+    handle.addEventListener("click", function (e) {
+      // Only treat as tap when there was no drag motion.
+      if (Math.abs(dragY) < 6) dismiss();
+    });
+    // Keyboard accessibility.
+    handle.setAttribute("tabindex", "0");
+    handle.setAttribute("role", "button");
+    handle.setAttribute("aria-label", "Open sign in");
+    handle.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); dismiss(); }
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else { boot(); }
+
+})();
+
+</script>
+</body>
+</html>
